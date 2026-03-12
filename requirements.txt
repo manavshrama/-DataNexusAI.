@@ -9,3 +9,5 @@ numpy
 scikit-learn
 tabulate
 plotly
+langchain-groq
+langchain-openai
