@@ -1,0 +1,22 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\ms130\AppData\Local\Programs\Python\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\ms130\.gemini\antigravity\scratch\DataNexusAI
+plugins: anyio-4.11.0, langsmith-0.5.0, cov-7.0.0
+collecting ... collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+________________ ERROR collecting tests/test_modular_logic.py _________________
+ImportError while importing test module 'C:\Users\ms130\.gemini\antigravity\scratch\DataNexusAI\tests\test_modular_logic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\..\..\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_modular_logic.py:11: in <module>
+    from constants.settings import DF_UPDATE_SENTINEL, MODEL_NAME
+E   ModuleNotFoundError: No module named 'constants.settings'
+=========================== short test summary info ===========================
+ERROR tests/test_modular_logic.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+============================== 1 error in 1.52s ===============================
