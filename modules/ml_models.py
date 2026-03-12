@@ -22,7 +22,7 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet, Hub
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, ExtraTreesRegressor
 from sklearn.svm import SVR
-from sklearn.neighbors import KNNRegressor
+from sklearn.neighbors import KNeighborsRegressor
 
 # Clustering
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, MeanShift, Birch
@@ -61,7 +61,7 @@ class MLModule:
             "AdaBoost Regressor": AdaBoostRegressor(),
             "Extra Trees Regressor": ExtraTreesRegressor(),
             "SVR": SVR(),
-            "KNN Regressor": KNNRegressor(),
+            "KNN Regressor": KNeighborsRegressor(),
             "SGD Regressor": SGDRegressor()
         }
         
