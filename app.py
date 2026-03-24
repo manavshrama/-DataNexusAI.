@@ -3,6 +3,13 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import threading
+import time
+import requests
+import os
+import uuid
+from langdb import LangDBClient
+from sentence_transformers import SentenceTransformer
 from modules.data_loader import DataLoader
 from modules.eda import EDAModule
 from modules.visualization import VisualizationModule
@@ -83,6 +90,49 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# --- LANGDB & EMBEDDINGS INIT ---
+@st.cache_resource
+def load_embedding_model():
+    return SentenceTransformer('all-MiniLM-L6-v2')
+
+try:
+    embedder = load_embedding_model()
+except Exception:
+    embedder = None
+
+@st.cache_resource
+def get_langdb_client():
+    api_key = st.secrets.get("LANGDB_API_KEY", "") if hasattr(st, "secrets") else ""
+    project_id = st.secrets.get("LANGDB_PROJECT_ID", "") if hasattr(st, "secrets") else ""
+    try:
+        return LangDBClient(project_id=project_id, api_key=api_key)
+    except Exception:
+        return None
+
+langdb_client = get_langdb_client()
+
+if langdb_client:
+    try:
+        langdb_client.create_collection("chat_memory")
+    except Exception:
+        pass
+    try:
+        langdb_client.create_collection("doc_store")
+    except Exception:
+        pass
+
+# --- KEEP-ALIVE THREAD ---
+def keep_alive():
+    app_url = os.environ.get("APP_URL") or (st.secrets.get("APP_URL") if hasattr(st, "secrets") else None)
+    if not app_url:
+        return
+    while True:
+        try:
+            requests.get(app_url, timeout=10)
+        except Exception:
+            pass
+        time.sleep(270)
+
 # --- SESSION STATE ---
 def init_state():
     # Try to get keys from secrets (for deployment)
@@ -105,11 +155,18 @@ def init_state():
         "groq_key": default_groq,
         "gemini_key": default_gemini,
         "eda_done": False,
-        "ml_results": {}
+        "ml_results": {},
+        "keep_alive_started": False,
+        "session_id": str(uuid.uuid4())
     }
     for k, v in keys.items():
         if k not in st.session_state:
             st.session_state[k] = v
+
+    if not st.session_state.keep_alive_started:
+        st.session_state.keep_alive_started = True
+        t = threading.Thread(target=keep_alive, daemon=True)
+        t.start()
 
 init_state()
 
@@ -156,6 +213,31 @@ with tab1:
                 st.session_state.df = df
                 st.session_state.df_original = df.copy()
                 st.session_state.file_name = uploaded_file.name
+                
+                # Use Case B: Document RAG Chunking
+                if langdb_client and embedder:
+                    try:
+                        text_content = df.to_csv(index=False)
+                        chunks = []
+                        chunk_size = 500
+                        overlap = 50
+                        start = 0
+                        while start < len(text_content):
+                            end = min(start + chunk_size, len(text_content))
+                            chunks.append(text_content[start:end])
+                            start += (chunk_size - overlap)
+                        
+                        for i, chunk in enumerate(chunks):
+                            vector = embedder.encode(chunk).tolist()
+                            langdb_client.insert(
+                                collection="doc_store",
+                                embeddings=[vector],
+                                documents=[chunk],
+                                metadatas=[{"file_name": uploaded_file.name, "chunk_id": i}]
+                            )
+                    except Exception:
+                        pass
+                        
                 st.rerun()
                 
     if st.session_state.df is not None:
@@ -319,11 +401,52 @@ with tab5:
                 st.markdown(f'<div class="user-bubble">{prompt}</div>', unsafe_allow_html=True)
             
             with st.spinner("AI is thinking..."):
-                response = bot.ask(prompt, st.session_state.df, st.session_state.chat_history)
-                st.session_state.chat_history.append({"role": "assistant", "content": response.get('answer', 'Error')})
+                doc_context = ""
+                chat_context = ""
+                
+                if langdb_client and embedder:
+                    try:
+                        q_emb = embedder.encode(prompt).tolist()
+                        
+                        # Document RAG
+                        docs_res = langdb_client.similarity_search(collection="doc_store", query_vector=q_emb, top_k=5)
+                        if docs_res and isinstance(docs_res, list):
+                            docs = [d.get("document", "") if isinstance(d, dict) else str(d) for d in docs_res]
+                            if docs:
+                                doc_context = "\nDataset Content Snippets:\n" + "\n".join(docs)
+                                
+                        # Chat Memory RAG
+                        chat_res = langdb_client.similarity_search(collection="chat_memory", query_vector=q_emb, top_k=3)
+                        if chat_res and isinstance(chat_res, list):
+                            hist = [d.get("document", "") if isinstance(d, dict) else str(d) for d in chat_res]
+                            if hist:
+                                chat_context = "\nPast Relevant Conversational Context:\n" + "\n".join(hist)
+                    except Exception:
+                        pass
+                
+                enhanced_prompt = prompt
+                if doc_context or chat_context:
+                    enhanced_prompt = f"{chat_context}\n{doc_context}\nUser Instruction: {prompt}"
+                    
+                response = bot.ask(enhanced_prompt, st.session_state.df, st.session_state.chat_history)
+                reply = response.get('answer', 'Error')
+                st.session_state.chat_history.append({"role": "assistant", "content": reply})
+                
+                if langdb_client and embedder:
+                    try:
+                        for role, content in [("user", prompt), ("assistant", reply)]:
+                            vector = embedder.encode(content).tolist()
+                            langdb_client.insert(
+                                collection="chat_memory",
+                                embeddings=[vector],
+                                documents=[content],
+                                metadatas=[{"role": role, "timestamp": time.time(), "session_id": st.session_state.session_id}]
+                            )
+                    except Exception:
+                        pass
                 
                 with chat_container:
-                    st.markdown(f'<div class="ai-bubble">{response.get("answer", "Error")}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="ai-bubble">{reply}</div>', unsafe_allow_html=True)
                     if 'chart' in response and response['chart']:
                         # Simple chart rendering from bot
                         c = response['chart']
