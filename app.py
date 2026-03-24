@@ -102,6 +102,17 @@ except Exception:
 
 @st.cache_resource
 def get_chromadb_client():
+    chroma_host = st.secrets.get("CHROMA_HOST", None) if hasattr(st, "secrets") else None
+    
+    if chroma_host:
+        try:
+            # Connect to Remote/Online ChromaDB
+            chroma_port = st.secrets.get("CHROMA_PORT", "8000") if hasattr(st, "secrets") else "8000"
+            return chromadb.HttpClient(host=chroma_host, port=chroma_port)
+        except Exception:
+            pass
+
+    # Fallback to local
     try:
         return chromadb.PersistentClient(path="./chroma_db")
     except Exception:
