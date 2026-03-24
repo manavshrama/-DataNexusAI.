@@ -10,6 +10,6 @@ google-generativeai>=0.5.0
 reportlab>=4.1.0
 python-docx>=1.1.0
 tabulate>=0.9.0
-langdb-client
+chromadb>=0.4.0
 sentence-transformers
 requests

@@ -8,7 +8,7 @@ import time
 import requests
 import os
 import uuid
-from langdb import LangDBClient
+import chromadb
 from sentence_transformers import SentenceTransformer
 from modules.data_loader import DataLoader
 from modules.eda import EDAModule
@@ -101,23 +101,20 @@ except Exception:
     embedder = None
 
 @st.cache_resource
-def get_langdb_client():
-    api_key = st.secrets.get("LANGDB_API_KEY", "") if hasattr(st, "secrets") else ""
-    project_id = st.secrets.get("LANGDB_PROJECT_ID", "") if hasattr(st, "secrets") else ""
+def get_chromadb_client():
     try:
-        return LangDBClient(project_id=project_id, api_key=api_key)
+        return chromadb.PersistentClient(path="./chroma_db")
     except Exception:
         return None
 
-langdb_client = get_langdb_client()
+chroma_client = get_chromadb_client()
+chat_collection = None
+doc_collection = None
 
-if langdb_client:
+if chroma_client:
     try:
-        langdb_client.create_collection("chat_memory")
-    except Exception:
-        pass
-    try:
-        langdb_client.create_collection("doc_store")
+        chat_collection = chroma_client.get_or_create_collection("chat_memory")
+        doc_collection = chroma_client.get_or_create_collection("doc_store")
     except Exception:
         pass
 
@@ -215,7 +212,7 @@ with tab1:
                 st.session_state.file_name = uploaded_file.name
                 
                 # Use Case B: Document RAG Chunking
-                if langdb_client and embedder:
+                if doc_collection and embedder:
                     try:
                         text_content = df.to_csv(index=False)
                         chunks = []
@@ -229,11 +226,12 @@ with tab1:
                         
                         for i, chunk in enumerate(chunks):
                             vector = embedder.encode(chunk).tolist()
-                            langdb_client.insert(
-                                collection="doc_store",
+                            chunk_id = f"{uploaded_file.name}_chunk_{i}_{uuid.uuid4().hex[:8]}"
+                            doc_collection.add(
                                 embeddings=[vector],
                                 documents=[chunk],
-                                metadatas=[{"file_name": uploaded_file.name, "chunk_id": i}]
+                                metadatas=[{"file_name": uploaded_file.name, "chunk_id": i}],
+                                ids=[chunk_id]
                             )
                     except Exception:
                         pass
@@ -404,22 +402,22 @@ with tab5:
                 doc_context = ""
                 chat_context = ""
                 
-                if langdb_client and embedder:
+                if chroma_client and embedder:
                     try:
                         q_emb = embedder.encode(prompt).tolist()
                         
                         # Document RAG
-                        docs_res = langdb_client.similarity_search(collection="doc_store", query_vector=q_emb, top_k=5)
-                        if docs_res and isinstance(docs_res, list):
-                            docs = [d.get("document", "") if isinstance(d, dict) else str(d) for d in docs_res]
-                            if docs:
+                        if doc_collection:
+                            docs_res = doc_collection.query(query_embeddings=[q_emb], n_results=5)
+                            if docs_res and 'documents' in docs_res and docs_res['documents'] and len(docs_res['documents'][0]) > 0:
+                                docs = docs_res['documents'][0]
                                 doc_context = "\nDataset Content Snippets:\n" + "\n".join(docs)
                                 
                         # Chat Memory RAG
-                        chat_res = langdb_client.similarity_search(collection="chat_memory", query_vector=q_emb, top_k=3)
-                        if chat_res and isinstance(chat_res, list):
-                            hist = [d.get("document", "") if isinstance(d, dict) else str(d) for d in chat_res]
-                            if hist:
+                        if chat_collection:
+                            chat_res = chat_collection.query(query_embeddings=[q_emb], n_results=3)
+                            if chat_res and 'documents' in chat_res and chat_res['documents'] and len(chat_res['documents'][0]) > 0:
+                                hist = chat_res['documents'][0]
                                 chat_context = "\nPast Relevant Conversational Context:\n" + "\n".join(hist)
                     except Exception:
                         pass
@@ -432,15 +430,16 @@ with tab5:
                 reply = response.get('answer', 'Error')
                 st.session_state.chat_history.append({"role": "assistant", "content": reply})
                 
-                if langdb_client and embedder:
+                if chat_collection and embedder:
                     try:
                         for role, content in [("user", prompt), ("assistant", reply)]:
                             vector = embedder.encode(content).tolist()
-                            langdb_client.insert(
-                                collection="chat_memory",
+                            chat_id = f"chat_{uuid.uuid4().hex}"
+                            chat_collection.add(
                                 embeddings=[vector],
                                 documents=[content],
-                                metadatas=[{"role": role, "timestamp": time.time(), "session_id": st.session_state.session_id}]
+                                metadatas=[{"role": role, "timestamp": time.time(), "session_id": st.session_state.session_id}],
+                                ids=[chat_id]
                             )
                     except Exception:
                         pass
