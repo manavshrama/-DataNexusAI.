@@ -1,3 +1,12 @@
+import sys
+
+# Standard Fix for ChromaDB/SQLite version conflict on Streamlit Cloud
+try:
+    import pysqlite3 as sqlite3
+    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+except ImportError:
+    pass
+
 import streamlit as st
 from utils.constants import CUSTOM_CSS, PAGE_TITLE, PAGE_ICON, APP_HEADER
 from services.vector_store import initialize_vector_store
@@ -24,7 +33,7 @@ render_sidebar()
 from utils.constants import APP_HEADER
 # --- MAIN APP ---
 st.title(APP_HEADER)
-st.sidebar.caption("Build: 2026.03.28-v1 (Modularized)")
+st.sidebar.caption("Build: 2026.03.28-v1.1 (Modularized)")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📂 Upload", "📊 EDA", "🎨 Viz", "🤖 ML Lab", "💬 AI Chat", "📥 Export"
