@@ -8,12 +8,13 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 try:
-    from constants.settings import DF_UPDATE_SENTINEL, MODEL_NAME
-    from services.gndec_service import gndec_answer
-    from services.execution_service import extract_python_code, execute_code
-    print("✅ Imports successful.")
+    from utils.constants import PAGE_TITLE
+    from services.vector_store import initialize_vector_store
+    from services.session_manager import init_session_state
+    from components.sidebar_ui import render_sidebar
+    print("✅ New Imports successful.")
 except Exception as e:
-    print(f"❌ Import failed: {e}")
+    print(f"❌ New Import failed: {e}")
     sys.exit(1)
 
 def test_gndec():
