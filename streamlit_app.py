@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.constants import CUSTOM_CSS, PAGE_TITLE, PAGE_ICON
+from utils.constants import CUSTOM_CSS, PAGE_TITLE, PAGE_ICON, APP_HEADER
 from services.vector_store import initialize_vector_store
 from services.session_manager import init_session_state
 from components.sidebar_ui import render_sidebar
@@ -21,8 +21,10 @@ embedder, chroma_client, chat_collection, doc_collection = initialize_vector_sto
 # --- SIDEBAR ---
 render_sidebar()
 
+from utils.constants import APP_HEADER
 # --- MAIN APP ---
-st.title("🔮 Data Science Hub")
+st.title(APP_HEADER)
+st.sidebar.caption("Build: 2026.03.28-v1 (Modularized)")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📂 Upload", "📊 EDA", "🎨 Viz", "🤖 ML Lab", "💬 AI Chat", "📥 Export"
