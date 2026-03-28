@@ -54,11 +54,13 @@ def render_upload_tab(doc_collection, embedder):
                 
     if st.session_state.df is not None:
         stats = DataLoader.get_stats(st.session_state.df)
+        st.markdown('<div class="meta-label">Dataset Vitals</div>', unsafe_allow_html=True)
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Rows", stats['rows'])
-        c2.metric("Cols", stats['cols'])
-        c3.metric("Nulls", stats['nulls'], f"{stats['null_pct']:.1f}%", delta_color="inverse")
-        c4.metric("Duplicates", stats['duplicates'])
+        with c1: st.markdown(f'<div class="glass-card"><h4>Rows</h4><h2>{stats["rows"]:,}</h2></div>', unsafe_allow_html=True)
+        with c2: st.markdown(f'<div class="glass-card"><h4>Cols</h4><h2>{stats["cols"]:,}</h2></div>', unsafe_allow_html=True)
+        with c3: st.markdown(f'<div class="glass-card"><h4>Nulls</h4><h2>{stats["null_pct"]:.1f}%</h2></div>', unsafe_allow_html=True)
+        with c4: st.markdown(f'<div class="glass-card"><h4>Duplicates</h4><h2>{stats["duplicates"]:,}</h2></div>', unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         
         st.subheader("Data Preview")
         rows = st.slider("Preview Rows", 5, 100, 10)
@@ -198,7 +200,10 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
         for msg in st.session_state.chat_history:
             role = "user" if msg["role"] == "user" else "assistant"
             with chat_container:
-                st.markdown(f'<div class="{role}-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
+                if role == "assistant":
+                    st.markdown(f'<div class="{role}-bubble"><span class="sparkle-icon">✨</span>{msg["content"]}</div>', unsafe_allow_html=True)
+                else:
+                    st.markdown(f'<div class="{role}-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
         
         if prompt := st.chat_input("Ask about your data..."):
             st.session_state.chat_history.append({"role": "user", "content": prompt})
@@ -243,7 +248,7 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                         pass
                 
                 with chat_container:
-                    st.markdown(f'<div class="ai-bubble">{reply}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="ai-bubble"><span class="sparkle-icon">✨</span>{reply}</div>', unsafe_allow_html=True)
                     if 'chart' in response and response['chart']:
                         c = response['chart']
                         viz = VisualizationModule()

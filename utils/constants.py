@@ -70,10 +70,53 @@ CUSTOM_CSS = """
 
     /* Glass Effects */
     .glass-card {
-        background: rgba(17, 37, 62, 0.7) !important;
+        background: rgba(11, 28, 48, 0.4) !important;
         backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
         border-radius: 16px !important;
+        padding: 24px !important;
+    }
+
+    /* Premium Chat Bubbles */
+    .user-bubble {
+        background-color: rgba(0, 73, 219, 0.08) !important;
+        color: #f8f9ff !important;
+        padding: 12px 18px !important;
+        border-radius: 12px 12px 0 12px !important;
+        margin: 10px 0 !important;
+        float: right;
+        clear: both;
+        max-width: 85%;
+        border: 1px solid rgba(0, 73, 219, 0.2) !important;
+        font-size: 14px !important;
+    }
+    .ai-bubble {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        color: #f8f9ff !important;
+        padding: 12px 18px !important;
+        border-radius: 12px 12px 12px 0 !important;
+        margin: 10px 0 !important;
+        float: left;
+        clear: both;
+        max-width: 85%;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        font-size: 14px !important;
+        position: relative !important;
+    }
+    .sparkle-icon {
+        color: #2962ff !important;
+        margin-right: 8px !important;
+    }
+    
+    /* Metadata Labels */
+    .meta-label {
+        font-family: 'Manrope', sans-serif !important;
+        font-size: 10px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        color: rgba(248, 249, 255, 0.4) !important;
+        font-weight: 700 !important;
+        margin-bottom: 4px !important;
     }
 </style>
 """
@@ -81,7 +124,7 @@ CUSTOM_CSS = """
 # --- UI STRINGS ---
 PAGE_TITLE = "Data Nexus AI"
 PAGE_ICON = "🔮"
-APP_HEADER = "🔮 Data Science Hub"
+APP_HEADER = "🌌 DataNexus AI: Intelligent Command Center"
 AI_ANALYST_TITLE = "💬 AI Data Analyst"
 ML_LAB_TITLE = "🤖 Machine Learning Lab"
 VIZ_STUDIO_TITLE = "Data Visualization Studio"
