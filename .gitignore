@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.streamlit/
+web/
+backend/
+AutoML_Stitch/
+NexusNoir/
+error_output.txt
+test_output.txt
+test_results.txt
+tests_err.txt
+tests_out.txt
+verify_deployment.py
+verify_modular.py
+stitch_assets/
+.env
+chroma_db/

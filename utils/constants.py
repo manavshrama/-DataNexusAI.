@@ -1,69 +1,79 @@
 # --- CUSTOM CSS ---
 CUSTOM_CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
     
     html, body, [data-testid="stAppViewContainer"] {
         font-family: 'Inter', sans-serif !important;
-        background-color: #0f0f1a;
-        color: #e8e8f0;
+        background-color: #0b1c30 !important;
+        color: #f8f9ff !important;
     }
     
-    /* Gradient Banner */
-    .stAppHeader {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        height: 5px;
-    }
-    
-    h1, h2, h3 {
+    /* Stitch Headers */
+    h1, h2, h3, [data-testid="stHeader"] {
+        font-family: 'Manrope', sans-serif !important;
         font-weight: 700 !important;
-        color: #fff !important;
+        color: #f8f9ff !important;
+        letter-spacing: -0.02em !important;
     }
     
-    /* Metric Cards */
-    div[data-testid="stMetric"] {
-        background-color: #1a1a2e;
-        border-left: 5px solid #667eea;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #071321 !important;
+        border-right: 1px solid rgba(115, 118, 135, 0.1) !important;
     }
     
-    /* Primary Buttons */
+    /* Surface Cards (Stitch Tonal Layering) */
+    div[data-testid="stMetric"], .stChatMessage, div[data-testid="stExpander"] {
+        background-color: #11253e !important;
+        border: 1px solid rgba(115, 118, 135, 0.15) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* Stitch Primary Button */
     .stButton > button {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+        background: linear-gradient(135deg, #0049db 0%, #2962ff 100%) !important;
         color: white !important;
         border: none !important;
-        border-radius: 20px !important;
-        padding: 0.5rem 2rem !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.8rem !important;
         font-weight: 600 !important;
-        transition: transform 0.2s ease;
+        font-family: 'Manrope', sans-serif !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 14px rgba(0, 73, 219, 0.3) !important;
     }
     .stButton > button:hover {
-        transform: scale(1.05);
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(0, 73, 219, 0.4) !important;
     }
     
-    /* Chat Bubbles */
-    .user-bubble {
-        background-color: #764ba2;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 15px 15px 0 15px;
-        margin: 5px 0;
-        float: right;
-        clear: both;
-        max-width: 80%;
+    /* Tabs Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px !important;
+        background-color: transparent !important;
     }
-    .ai-bubble {
-        background-color: #2a2a4a;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 15px 15px 15px 0;
-        margin: 5px 0;
-        float: left;
-        clear: both;
-        max-width: 80%;
-        border: 1px solid #667eea;
+    .stTabs [data-baseweb="tab"] {
+        height: 40px !important;
+        white-space: pre !important;
+        background-color: rgba(115, 118, 135, 0.05) !important;
+        border-radius: 8px 8px 0 0 !important;
+        color: rgba(248, 249, 255, 0.5) !important;
+        font-weight: 600 !important;
+        border: none !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #0049db !important;
+        color: white !important;
+    }
+
+    /* Glass Effects */
+    .glass-card {
+        background: rgba(17, 37, 62, 0.7) !important;
+        backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
     }
 </style>
 """
