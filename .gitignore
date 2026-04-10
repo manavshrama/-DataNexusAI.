@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
-.streamlit/
+.streamlit/secrets.toml
 AutoML_Stitch/
 NexusNoir/
 error_output.txt
