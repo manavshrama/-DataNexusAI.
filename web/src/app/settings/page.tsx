@@ -1,10 +1,10 @@
 import MainLayout from '@/components/MainLayout';
-import { 
-  Settings as SettingsIcon, 
-  Key, 
-  Shield, 
-  User, 
-  Paintbrush, 
+import {
+  Settings as SettingsIcon,
+  Key,
+  Shield,
+  User,
+  Paintbrush,
   Database,
   Check,
   ChevronRight
@@ -12,35 +12,35 @@ import {
 import { cn } from '@/lib/utils';
 
 const settingsSections = [
-  { 
-    id: 'account', 
-    title: 'Profile & Account', 
-    icon: User, 
-    description: 'Manage your connected accounts and personal details.' 
+  {
+    id: 'account',
+    title: 'Profile & Account',
+    icon: User,
+    description: 'Manage your connected accounts and personal details.'
   },
-  { 
-    id: 'security', 
-    title: 'API Keys & Secrets', 
-    icon: Key, 
-    description: 'Configure Groq, Gemini, and other AI provider keys.' 
+  {
+    id: 'security',
+    title: 'API Keys & Secrets',
+    icon: Key,
+    description: 'Configure Groq, Gemini, and other AI provider keys.'
   },
-  { 
-    id: 'appearance', 
-    title: 'System Interface', 
-    icon: Paintbrush, 
-    description: 'Personalize the theme, density, and animations of Nexus Noir.' 
+  {
+    id: 'appearance',
+    title: 'System Interface',
+    icon: Paintbrush,
+    description: 'Personalize the theme, density, and animations of Nexus Noir.'
   },
-  { 
-    id: 'storage', 
-    title: 'Data Nexus Storage', 
-    icon: Database, 
-    description: 'Manage your local and cloud datasets connections.' 
+  {
+    id: 'storage',
+    title: 'Data Nexus Storage',
+    icon: Database,
+    description: 'Manage your local and cloud datasets connections.'
   },
-  { 
-    id: 'privacy', 
-    title: 'Security & Privacy', 
-    icon: Shield, 
-    description: 'Control data encryption and access permissions.' 
+  {
+    id: 'privacy',
+    title: 'Security & Privacy',
+    icon: Shield,
+    description: 'Control data encryption and access permissions.'
   }
 ];
 
@@ -56,8 +56,8 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <aside className="space-y-1">
             {settingsSections.map((section) => (
-              <button 
-                key={section.id} 
+              <button
+                key={section.id}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group text-sm font-semibold",
                   section.id === 'security' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-surface text-on-background/60 hover:text-primary'
@@ -80,8 +80,8 @@ export default function SettingsPage() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-on-background/40 uppercase tracking-wider">Groq API Key</label>
                     <div className="relative group">
-                      <input 
-                        type="password" 
+                      <input
+                        type="password"
                         defaultValue="••••••••••••••••••••••••"
                         className="w-full h-11 bg-surface-low border border-outline/20 rounded-xl px-4 text-sm font-mono focus:outline-none focus:border-primary transition-all group-focus-within:border-primary/50"
                       />
@@ -90,11 +90,11 @@ export default function SettingsPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-on-background/40 uppercase tracking-wider">Gemini API Key</label>
-                    <input 
-                      type="password" 
+                    <input
+                      type="password"
                       placeholder="Enter your Gemini Key"
                       className="w-full h-11 bg-surface-low border border-outline/20 rounded-xl px-4 text-sm font-mono focus:outline-none focus:border-primary transition-all"
                     />
