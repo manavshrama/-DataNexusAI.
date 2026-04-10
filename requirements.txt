@@ -21,3 +21,4 @@ langchain-openai
 openai
 python-dotenv
 pysqlite3-binary
+xgboost
