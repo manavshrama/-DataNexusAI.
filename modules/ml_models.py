@@ -5,8 +5,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error, silhouette_score
-import plotly.express as px
-import plotly.graph_objects as go
 
 # Classification
 from sklearn.linear_model import LogisticRegression, SGDClassifier

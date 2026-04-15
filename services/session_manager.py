@@ -2,8 +2,11 @@ import streamlit as st
 import threading
 import time
 import uuid
+import logging
 import requests
 import os
+
+logger = logging.getLogger(__name__)
 
 def keep_alive():
     """Background service to ping the app and prevent sleep."""
@@ -13,8 +16,8 @@ def keep_alive():
     while True:
         try:
             requests.get(app_url, timeout=10)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Keep-alive ping failed: %s", e)
         time.sleep(270)
 
 def init_session_state():

@@ -13,3 +13,8 @@ verify_modular.py
 stitch_assets/
 .env
 chroma_db/
+node_modules/
+web/.next/
+*.pkl
+charts/
+temp_chart.png

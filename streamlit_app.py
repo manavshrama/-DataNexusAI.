@@ -29,25 +29,7 @@ st.set_page_config(page_title=PAGE_TITLE, page_icon=PAGE_ICON, layout="wide")
 # --- CUSTOM CSS ---
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# --- KEEP-ALIVE MECHANISM ---
-# Add a keep-alive component to prevent Streamlit Cloud from sleeping the app
-keep_alive_placeholder = st.empty()
-
-
-def keep_alive():
-    import time
-
-    while True:
-        time.sleep(300)  # Sleep for 5 minutes
-        keep_alive_placeholder.text(f"Last refresh: {time.strftime('%H:%M:%S')}")
-        st.rerun()
-
-
-# Start keep-alive in a separate thread (though Streamlit may not support it fully)
-import threading
-
-keep_alive_thread = threading.Thread(target=keep_alive, daemon=True)
-keep_alive_thread.start()
+# Keep-alive is handled by services/session_manager.py
 
 # --- INITIALIZE SERVICES ---
 init_session_state()
@@ -56,7 +38,6 @@ embedder, chroma_client, chat_collection, doc_collection = initialize_vector_sto
 # --- SIDEBAR ---
 render_sidebar()
 
-from utils.constants import APP_HEADER
 
 # --- MAIN APP ---
 st.title(APP_HEADER)

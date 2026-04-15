@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import streamlit as st
 
 def process_data(df):
     """Basic processing and cleaning of the dataframe."""

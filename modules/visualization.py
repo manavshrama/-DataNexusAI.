@@ -1,7 +1,9 @@
+import logging
 import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 class VisualizationModule:
     """Module for generating 17 different interactive Plotly charts."""
@@ -47,7 +49,7 @@ class VisualizationModule:
                                  trendline="ols" if aggregation == "OLS Trendline" else None, template="plotly_dark")
             
             elif chart_type == "Pie / Donut Chart":
-                fig = px.pie(plot_df, names=x, values=y, hole=0.4 if "Donut" in chart_type else 0, template="plotly_dark")
+                fig = px.pie(plot_df, names=x, values=y, hole=0.4, template="plotly_dark")
             
             elif chart_type == "Box Plot":
                 fig = px.box(plot_df, x=x, y=y, color=color, points="all", template="plotly_dark")
@@ -94,7 +96,7 @@ class VisualizationModule:
                 cols = df.select_dtypes(include=[np.number]).columns.tolist()
                 fig = px.parallel_coordinates(df, columns=cols, color=color, color_continuous_scale=color_scale, template="plotly_dark")
             
-            elif chart_type == "Pair Plot (Scatter Matrix)":
+            elif chart_type in ("Pair Plot", "Pair Plot (Scatter Matrix)"):
                 cols = df.select_dtypes(include=[np.number]).columns.tolist()
                 fig = px.scatter_matrix(df, dimensions=cols, color=color, template="plotly_dark")
             
@@ -105,5 +107,5 @@ class VisualizationModule:
             return fig
             
         except Exception as e:
-            print(f"Viz Error: {e}")
+            logger.warning("Visualization error for chart_type=%s: %s", chart_type, e)
             return None

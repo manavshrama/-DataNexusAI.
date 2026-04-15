@@ -2,16 +2,10 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import io
-import os
 import uuid
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel
-
-# Import existing modular components
-# (Assuming they are in the PYTHONPATH)
-from modules.eda import basic_eda, full_eda
-from modules.chatbot import get_ai_response
-from services.vector_store import initialize_vector_store
+from collections import OrderedDict
 
 app = FastAPI(title="DataNexus AI backend")
 
@@ -24,8 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory session store (simple for current scope)
-sessions = {}
+# In-memory session store with size limit to prevent memory leaks
+MAX_SESSIONS = 100
+sessions: OrderedDict = OrderedDict()
 
 class ChatRequest(BaseModel):
     message: str
@@ -56,6 +51,10 @@ async def upload_dataset(file: UploadFile = File(...)):
         else:
             raise HTTPException(status_code=400, detail="Unsupported file format")
             
+        # Evict oldest session if limit reached
+        if len(sessions) >= MAX_SESSIONS:
+            sessions.popitem(last=False)
+
         sessions[session_id] = {
             "df": df,
             "filename": file.filename

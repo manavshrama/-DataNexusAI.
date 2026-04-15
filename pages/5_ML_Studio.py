@@ -100,9 +100,10 @@ if st.button("🚀 Start Training", type="primary", use_container_width=True):
     # Preprocessing
     if handle_nulls:
         for c in work_df.select_dtypes(include=[np.number]).columns:
-            work_df[c].fillna(work_df[c].median(), inplace=True)
+            work_df[c] = work_df[c].fillna(work_df[c].median())
         for c in work_df.select_dtypes(include=['object', 'category']).columns:
-            work_df[c].fillna(work_df[c].mode().iloc[0] if not work_df[c].mode().empty else "Unknown", inplace=True)
+            fill_val = work_df[c].mode().iloc[0] if not work_df[c].mode().empty else "Unknown"
+            work_df[c] = work_df[c].fillna(fill_val)
 
     # Encode target for classification
     le = None

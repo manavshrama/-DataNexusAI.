@@ -11,7 +11,7 @@ class ChatbotModule:
         self.groq_key = groq_key
         self.gemini_key = gemini_key
         self.system_prompt = """
-        You are Data Nexus AI, a expert data scientist. 
+        You are Data Nexus AI, an expert data scientist. 
         ALWAYS respond in pure valid JSON only. Never use plain text outside JSON.
         
         JSON Schema:

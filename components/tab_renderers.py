@@ -4,12 +4,15 @@ import numpy as np
 import plotly.express as px
 import uuid
 import time
+import logging
 from modules.data_loader import DataLoader
 from modules.eda import EDAModule
 from modules.visualization import VisualizationModule
 from modules.ml_models import MLModule
 from modules.chatbot import ChatbotModule
 from modules.exporter import ExporterModule
+
+logger = logging.getLogger(__name__)
 
 
 def render_upload_tab(doc_collection, embedder):
@@ -54,8 +57,8 @@ def render_upload_tab(doc_collection, embedder):
                                 ],
                                 ids=[chunk_id],
                             )
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning("Failed to chunk document for RAG: %s", e)
 
                 st.rerun()
 
@@ -358,8 +361,8 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                                     "\nPast Relevant Conversational Context:\n"
                                     + "\n".join(chat_res["documents"][0])
                                 )
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning("Failed to query vector store: %s", e)
 
                 enhanced_prompt = (
                     f"{chat_context}\n{doc_context}\nUser Instruction: {prompt}"
@@ -390,8 +393,8 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                                 ],
                                 ids=[f"chat_{uuid.uuid4().hex}"],
                             )
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.warning("Failed to store chat embedding: %s", e)
 
                 with chat_container:
                     st.markdown(
@@ -491,7 +494,7 @@ def render_insights_tab():
         st.subheader("⚡ Active Intelligence Stream")
 
         for insight in insights:
-            severity_color = {"high": "🔴", "medium": "🟠", "low": "🔵"}
+
             st.markdown(
                 f"""
             <div style="background-color: rgba(17, 37, 62, 0.8); border: 1px solid rgba(115, 118, 135, 0.15); border-radius: 12px; padding: 20px; margin-bottom: 16px;">

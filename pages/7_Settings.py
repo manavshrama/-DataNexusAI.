@@ -25,8 +25,8 @@ with st.container():
     
     col1, col2 = st.columns(2)
     with col1:
-        groq_key = st.text_input("Groq API Key", type="password", value="••••••••••••••••")
-        st.info("Status: ACTIVE" if groq_key else "Status: NOT SET")
+        groq_key = st.text_input("Groq API Key", type="password", placeholder="Enter your Groq Key")
+        st.info("Status: ACTIVE" if groq_key.strip() else "Status: NOT SET")
     
     with col2:
         gemini_key = st.text_input("Gemini API Key", type="password", placeholder="Enter your Gemini Key", value=st.session_state['settings'].get('api_key', ''))

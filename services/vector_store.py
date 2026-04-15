@@ -38,7 +38,7 @@ def get_chromadb_client():
 @st.cache_data
 def get_embedding_cache_key(text: str) -> str:
     """Generate a cache key for text embedding."""
-    return hashlib.md5(text.encode()).hexdigest()
+    return hashlib.sha256(text.encode()).hexdigest()
 
 
 @st.cache_data

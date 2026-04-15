@@ -172,7 +172,10 @@ def load_css():
 
 def glass_card(content, title=None):
     """Helper to wrap content in a glass card."""
+    import html
+    safe_content = html.escape(str(content))
     if title:
-        st.markdown(f'<div class="glass-card"><h3>{title}</h3>{content}</div>', unsafe_allow_html=True)
+        safe_title = html.escape(str(title))
+        st.markdown(f'<div class="glass-card"><h3>{safe_title}</h3>{safe_content}</div>', unsafe_allow_html=True)
     else:
-        st.markdown(f'<div class="glass-card">{content}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="glass-card">{safe_content}</div>', unsafe_allow_html=True)

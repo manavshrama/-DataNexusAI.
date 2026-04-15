@@ -26,7 +26,7 @@ class ExporterModule:
         return df.to_json(orient=orient, indent=2).encode('utf-8')
 
     @staticmethod
-    def to_pdf(df, filename="report.pdf"):
+    def to_pdf(df):
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
         p.setFont("Helvetica-Bold", 16)
@@ -76,19 +76,30 @@ class ExporterModule:
 
     @staticmethod
     def to_sql(df, table_name="data_nexus"):
-        create_stmt = f"CREATE TABLE {table_name} (\n"
+        # Sanitize table name to prevent SQL injection
+        safe_table_name = ''.join(c for c in table_name if c.isalnum() or c == '_')
+        create_stmt = f"CREATE TABLE {safe_table_name} (\n"
         for col, dtype in df.dtypes.items():
+            safe_col = ''.join(c for c in str(col) if c.isalnum() or c == '_')
             sql_type = "TEXT"
             if "int" in str(dtype) or "float" in str(dtype):
                 sql_type = "NUMERIC"
-            create_stmt += f"  {col} {sql_type},\n"
+            create_stmt += f"  {safe_col} {sql_type},\n"
         create_stmt = create_stmt.rstrip(",\n") + "\n);"
         
-        # Simplified INSERT generation
+        # Simplified INSERT generation with proper escaping
         inserts = ""
         for _, row in df.head(10).iterrows():
-            vals = [f"'{str(v)}'" if isinstance(v, str) else str(v) for v in row.values]
-            inserts += f"INSERT INTO {table_name} VALUES ({', '.join(vals)});\n"
+            vals = []
+            for v in row.values:
+                if v is None or (isinstance(v, float) and str(v) == 'nan'):
+                    vals.append("NULL")
+                elif isinstance(v, (int, float)):
+                    vals.append(str(v))
+                else:
+                    escaped = str(v).replace("'", "''")
+                    vals.append(f"'{escaped}'")
+            inserts += f"INSERT INTO {safe_table_name} VALUES ({', '.join(vals)});\n"
             
         return (create_stmt + "\n\n" + inserts).encode('utf-8')
 
