@@ -40,10 +40,9 @@ def init_state():
 init_state()
 load_css()
 
-# ── Sidebar branding (shown on default/home page) ──
-with st.sidebar:
-    st.markdown('<h1 class="gradient-text" style="font-size:1.6rem;">🌌 DataNexusAI</h1>', unsafe_allow_html=True)
-    st.caption("v1.1.0 | Nexus Labs")
+# ── Sidebar Navigation ──
+from utils.navigation import sidebar_nav
+sidebar_nav(0)
 
 # ── Home Page Content ──
 # (This file IS the home page in Streamlit's multi-page layout)
