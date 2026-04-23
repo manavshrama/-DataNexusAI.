@@ -1,3 +1,4 @@
+# DATA NEXUS AI - UNIVERSAL ENGINE v1.1.0 (FORCE DEPLOY)
 import sys
 
 # Standard Fix for ChromaDB/SQLite version conflict on Streamlit Cloud
@@ -42,7 +43,7 @@ load_css()
 # ── Sidebar branding (shown on default/home page) ──
 with st.sidebar:
     st.markdown('<h1 class="gradient-text" style="font-size:1.6rem;">🌌 DataNexusAI</h1>', unsafe_allow_html=True)
-    st.caption("v1.0.0 | Nexus Labs")
+    st.caption("v1.1.0 | Nexus Labs")
 
 # ── Home Page Content ──
 # (This file IS the home page in Streamlit's multi-page layout)

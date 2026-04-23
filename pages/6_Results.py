@@ -207,4 +207,4 @@ with model_tab:
         st.info("Train a model in the 'ML Studio' to see export options here.")
 
 st.markdown("---")
-st.caption("Nexus Engine v1.1 | All exports are generated in-memory for security and speed.")
+st.caption("Nexus Engine v1.1.0 | All exports are generated in-memory for security and speed.")
