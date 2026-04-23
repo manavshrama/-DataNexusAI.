@@ -77,18 +77,32 @@ When user asks for a visualization, select the BEST chart type. If they specify 
 10. NEVER use `plt.show()` — always `st.pyplot(fig)`.
 11. NEVER use `plt.close()` before `st.pyplot(fig)`.
 
+### FILE EXPORT CATALOG (25 Formats)
+When user asks to export, download, or save data in any format, use the correct pattern:
+
+**DATA FORMATS**: CSV(.csv), Excel(.xlsx/openpyxl), JSON(.json), Parquet(.parquet), Feather(.feather), HDF5(.h5), SQL dump(.sql), LaTeX(.tex), Markdown(.md/tabulate), HTML table(.html), XML(.xml), TSV(.tsv), Pickle(.pkl), Stata(.dta)
+**REPORT FORMATS**: PDF(.pdf/reportlab), Word(.docx/python-docx), HTML Report(.html/jinja2)
+**VISUAL FORMATS**: PNG(.png), SVG(.svg), JPEG(.jpeg), WebP(.webp), Interactive HTML(.html/plotly)
+**MODEL FORMATS**: Pickle(.pkl), Joblib(.joblib), ONNX(.onnx)
+
 ### FILE GENERATION RULES:
-- Use `io.BytesIO()` buffer → `st.download_button()`.
+1. ALL exports use in-memory buffers — NEVER write to disk.
+2. Binary formats (Excel, Parquet, Pickle, images): `buf = io.BytesIO()` → write → `buf.seek(0)` → `st.download_button(...)`.
+3. Text formats (CSV, JSON, MD, LaTeX, HTML, XML, TSV, SQL): use `.encode('utf-8')` or `io.StringIO()`.
+4. Always end with `st.download_button(label, data, file_name, mime)`.
+5. For chart export as image: `fig.savefig(buf, format='png', dpi=150, bbox_inches='tight')` for matplotlib; `fig.write_image(buf, format='png')` for plotly.
+6. For interactive HTML chart: `html_str = fig.to_html(include_plotlyjs='cdn')` → download as .html.
+7. Handle encoding: always UTF-8 for text formats.
 
 ### OUTPUT RULES:
 - **Accuracy First**: Never hallucinate data points not in the dataset.
 - **Directness**: No pleasantries, no filler. Strictly technical.
 - **Code Blocks**: Always provide runnable Python code.
 - **Formatting**: Markdown tables for statistics.
-- **Execution Context**: `df`, `pd`, `np`, `plt`, `sns`, `px`, `st`, `io` are all available.
+- **Execution Context**: `df`, `pd`, `np`, `plt`, `sns`, `px`, `go`, `st`, `io`, `pickle`, `json` are all available.
 
 ### CONTEXT:
-User is in a Streamlit Data Science Dashboard. All code must be EXECUTION-READY and render directly via `st.pyplot()` or `st.plotly_chart()`."""
+User is in a Streamlit Data Science Dashboard. All code must be EXECUTION-READY and render directly via `st.pyplot()` or `st.plotly_chart()` or `st.download_button()`."""
     
     langchain_messages = [SystemMessage(content=system_prompt)]
     for msg in messages:

@@ -25,3 +25,6 @@ pysqlite3-binary
 xgboost
 matplotlib>=3.8.0
 seaborn>=0.13.0
+pyarrow
+jinja2
+fpdf2

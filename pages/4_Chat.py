@@ -172,6 +172,12 @@ with st.sidebar:
                 "Recommend ML models for this dataset",
                 "Generate a baseline ML pipeline",
             ],
+            "Export": [
+                "Export this dataset to Excel (.xlsx)",
+                "Download as JSON (nested structure)",
+                "Convert to Parquet for fast analytics",
+                "Generate a Markdown table of the data",
+            ],
         }
         for cat, qs in data_queries.items():
             with st.expander(f"**{cat}**", expanded=False):
