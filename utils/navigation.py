@@ -41,7 +41,7 @@ def sidebar_nav(default_index=0):
                 st.switch_page("pages/7_Settings.py")
         
         st.markdown("---")
-        st.caption("v1.1.0 | Nexus Labs")
+        st.caption("v1.0.0 | Nexus Labs")
         st.markdown("[GitHub](https://github.com) | [Support](https://example.com)")
     
     return selected

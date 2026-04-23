@@ -5,8 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-import plotly.graph_objects as go
-import scipy.stats as scipy_stats
 import re
 from utils.theme import load_css, glass_card
 from utils.navigation import sidebar_nav
@@ -75,8 +73,6 @@ def execute_code_blocks(text):
                     'plt': plt,
                     'sns': sns,
                     'px': px,
-                    'go': go,
-                    'scipy_stats': scipy_stats,
                     'st': st,
                     'df': st.session_state['df'],
                     'io': io
@@ -103,88 +99,28 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### ⚡ Quick Queries")
 
-    viz_tab, data_tab = st.tabs(["📊 Charts", "🔬 Data"])
+    queries = {
+        "EDA": [
+            "Show summary statistics and data distribution",
+            "Generate a correlation heatmap for numeric columns",
+            "Plot histograms for all numeric features"
+        ],
+        "Cleaning": [
+            "Detect outliers using boxplots and show cleaning code",
+            "Provide code to handle missing values and download the result"
+        ],
+        "Visuals": [
+            "Create an interactive scatter plot matrix (Plotly)",
+            "Show a pairplot for the most variant columns"
+        ]
+    }
 
-    with viz_tab:
-        viz_queries = {
-            "Distribution": [
-                "Plot histograms for all numeric columns",
-                "Show box plots to detect outliers",
-                "Create violin plots grouped by category",
-                "Generate KDE density plots",
-                "Q-Q plot for normality testing",
-            ],
-            "Comparison": [
-                "Grouped bar chart comparing categories",
-                "Lollipop chart for top 10 values",
-                "Horizontal bar chart of category frequencies",
-                "Stacked bar chart showing composition",
-            ],
-            "Relationship": [
-                "Scatter matrix (pair plot) for all numeric cols",
-                "Correlation heatmap",
-                "Bubble chart with 3 variables",
-                "Regression plot with trend lines",
-                "Hexbin plot for dense data",
-            ],
-            "Composition": [
-                "Pie/Donut chart for category proportions",
-                "Treemap for hierarchical data",
-                "Sunburst chart for nested categories",
-                "Waterfall chart for sequential changes",
-            ],
-            "Time Series": [
-                "Line chart for trends over time",
-                "Area chart showing volume over time",
-                "Candlestick chart for OHLC data",
-            ],
-            "Advanced": [
-                "Parallel coordinates for all features",
-                "Radar/Spider chart comparing profiles",
-                "Sankey diagram for categorical flow",
-                "Funnel chart for stage drop-off",
-            ],
-            "Statistical": [
-                "Error bar chart (mean ± std)",
-                "Residual plot for model diagnostics",
-                "Count plot for categorical frequency",
-            ],
-        }
-        for cat, qs in viz_queries.items():
-            with st.expander(f"**{cat}**", expanded=False):
-                for q in qs:
-                    if st.button(q, key=f"viz_{cat}_{q}", use_container_width=True):
-                        st.session_state['messages'].append({"role": "user", "content": q})
-                        st.rerun()
-
-    with data_tab:
-        data_queries = {
-            "EDA": [
-                "Run full EDA: summary stats, nulls, distributions",
-                "Show data types and memory usage",
-            ],
-            "Cleaning": [
-                "Detect and fix all data quality issues",
-                "Handle missing values with imputation code",
-                "Remove duplicates and provide download",
-            ],
-            "Modeling": [
-                "Recommend ML models for this dataset",
-                "Generate a baseline ML pipeline",
-            ],
-            "Export": [
-                "Export this dataset to Excel (.xlsx)",
-                "Download as JSON (nested structure)",
-                "Convert to Parquet for fast analytics",
-                "Generate a Markdown table of the data",
-            ],
-        }
-        for cat, qs in data_queries.items():
-            with st.expander(f"**{cat}**", expanded=False):
-                for q in qs:
-                    if st.button(q, key=f"data_{cat}_{q}", use_container_width=True):
-                        st.session_state['messages'].append({"role": "user", "content": q})
-                        st.rerun()
+    for category, qs in queries.items():
+        st.markdown(f"**{category}**")
+        for q in qs:
+            if st.button(q, key=f"q_{q}", use_container_width=True):
+                st.session_state['messages'].append({"role": "user", "content": q})
+                st.rerun()
 
 # --- Chat display ---
 chat_container = st.container()

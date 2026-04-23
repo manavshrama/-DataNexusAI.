@@ -1,181 +1,203 @@
 import streamlit as st
 
 def load_css():
-    """Injects custom CSS for glassmorphism and premium styling."""
-    glass_css = """
+    """Injects custom CSS for high-end Cosmic Glassmorphism and Premium UI."""
+    nexus_css = """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;800&display=swap');
 
     :root {
         --primary-color: #6C63FF;
         --secondary-color: #00C9A7;
         --accent-color: #845EC2;
-        --bg-dark: #0F0F1A;
-        --bg-gradient: linear-gradient(135deg, #0F0F1A 0%, #1A1A2E 50%, #16213E 100%);
-        --glass-bg: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.12);
-        --text-color: #FFFFFF;
-        --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        --bg-dark: #0A0A12;
+        --bg-gradient: radial-gradient(circle at 50% 50%, #1A1A2E 0%, #0A0A12 100%);
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-highlight: rgba(255, 255, 255, 0.05);
+        --text-primary: #FFFFFF;
+        --text-secondary: rgba(255, 255, 255, 0.7);
+        --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
     }
 
-    /* Global Styles */
+    /* Global Foundation */
     .stApp {
         background: var(--bg-gradient);
-        color: var(--text-color);
+        color: var(--text-primary);
         font-family: 'Inter', sans-serif;
     }
 
-    /* Glass Card Style */
-    .glass-card {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 1.5rem;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 1rem;
-    }
-
-    /* Gradient Text */
-    .gradient-text {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 700;
-    }
-
-    /* Customizing Streamlit Elements */
-    .stButton>button {
-        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 0.6rem 2rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
-    }
-
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.5);
-        border: none;
-        color: white;
-    }
-
-    /* Sidebar Styling */
+    /* Floating Navigation Sidebar */
     section[data-testid="stSidebar"] {
-        background-color: rgba(15, 15, 26, 0.95);
+        background-color: rgba(10, 10, 18, 0.8) !important;
+        backdrop-filter: blur(20px);
         border-right: 1px solid var(--glass-border);
     }
 
-    /* Metric Styling */
-    div[data-testid="stMetricValue"] {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        background: linear-gradient(135deg, #FFF, #CCC);
+    /* High-Refraction Glass Card */
+    .glass-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        padding: 1.8rem;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(108, 99, 255, 0.4);
+        box-shadow: 0 12px 40px 0 rgba(108, 99, 255, 0.2);
+    }
+
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+        transition: 0.5s;
+    }
+
+    .glass-card:hover::before {
+        left: 100%;
+    }
+
+    /* Premium Gradient Text */
+    .gradient-text {
+        background: linear-gradient(135deg, #6C63FF 0%, #00C9A7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        letter-spacing: -1px;
     }
 
-    /* Inputs */
-    .stTextInput>div>div>input, .stSelectbox>div>div>div {
-        background-color: rgba(255, 255, 255, 0.03) !important;
+    /* Nexus Buttons */
+    .stButton>button {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 14px !important;
+        padding: 0.75rem 2rem !important;
+        font-weight: 600 !important;
+        font-family: 'Outfit', sans-serif !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3) !important;
+        width: 100%;
+    }
+
+    .stButton>button:hover {
+        transform: scale(1.02) !important;
+        box-shadow: 0 6px 25px rgba(108, 99, 255, 0.5) !important;
+        border: none !important;
+    }
+
+    /* Customizing Metric Widgets */
+    div[data-testid="stMetric"] {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 1rem;
+        border-radius: 15px;
+        text-align: center;
+    }
+    
+    div[data-testid="stMetricValue"] {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 2.2rem !important;
+        color: var(--secondary-color) !important;
+    }
+
+    /* Chat Styling */
+    .chat-bubble {
+        padding: 1.2rem;
+        border-radius: 18px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        margin-bottom: 12px;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+    .user-bubble {
+        background: rgba(108, 99, 255, 0.1) !important;
+        border-right: 3px solid var(--primary-color) !important;
+        margin-left: 2rem;
+    }
+    .assistant-bubble {
+        background: rgba(0, 201, 167, 0.05) !important;
+        border-left: 3px solid var(--secondary-color) !important;
+        margin-right: 2rem;
+    }
+
+    /* Form Inputs */
+    .stTextInput>div>div>input, .stSelectbox>div>div>div, .stSlider>div>div {
+        background-color: rgba(255, 255, 255, 0.02) !important;
         border: 1px solid var(--glass-border) !important;
         color: white !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
     }
 
-    /* Hide Streamlit Header/Footer for cleaner look */
+    /* Hide Defaults */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    .block-container { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+    /* Streamlit Tab Styling Overhaul */
+    div[data-testid="stTabs"] {
+        background: transparent !important;
+    }
     
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+    button[data-baseweb="tab"] {
+        background-color: transparent !important;
+        border: none !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        color: var(--text-secondary) !important;
+        padding: 0.75rem 1.5rem !important;
+        transition: all 0.3s ease !important;
+        border-bottom: 2px solid transparent !important;
     }
 
-    /* Step Badge */
-    .step-badge {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        margin-right: 12px;
-        box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
-        font-size: 0.9rem;
+    button[data-baseweb="tab"]:hover {
+        color: var(--text-primary) !important;
+        background-color: rgba(255, 255, 255, 0.03) !important;
     }
 
-    /* Prediction Result Card */
-    .prediction-card {
-        text-align: center;
-        padding: 2.5rem;
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.03);
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: var(--primary-color) !important;
+        border-bottom: 2px solid var(--primary-color) !important;
+        background-color: rgba(108, 99, 255, 0.05) !important;
     }
 
-    /* Animations */
-    @keyframes shine {
-        from { background-position: 0% center; }
-        to { background-position: 200% center; }
+    /* Shimmer Animation */
+    @keyframes shimmer {
+        0% { opacity: 0.8; }
+        50% { opacity: 1; }
+        100% { opacity: 0.8; }
     }
-
-    .shimmer-text {
-        background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 50%, var(--primary-color) 100%);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: shine 4s linear infinite;
-        font-weight: 700;
-    }
-
-    @keyframes shimmer-bg {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-    }
-
-    .shimmer-card {
-        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0) 100%), var(--glass-bg);
-        background-size: 200% 100%;
-        animation: shimmer-bg 5s infinite;
-    }
-
-    /* Premium Chat Bubbles */
-    .chat-bubble {
-        padding: 1.2rem;
-        border-radius: 16px;
-        border: 1px solid var(--glass-border);
-        backdrop-filter: blur(12px);
-        box-shadow: var(--card-shadow);
-        margin-bottom: 8px;
-    }
-    .user-bubble {
-        background: rgba(108, 99, 255, 0.12) !important;
-        border-right: 4px solid var(--primary-color) !important;
-    }
-    .assistant-bubble {
-        background: rgba(0, 201, 167, 0.12) !important;
-        border-left: 4px solid var(--secondary-color) !important;
-    }
+    .shimmer-text { animation: shimmer 2s infinite ease-in-out; }
 
     </style>
     """
-    st.markdown(glass_css, unsafe_allow_html=True)
+    st.markdown(nexus_css, unsafe_allow_html=True)
 
-def glass_card(content, title=None):
-    """Helper to wrap content in a glass card."""
-    import html
-    safe_content = html.escape(str(content))
-    if title:
-        safe_title = html.escape(str(title))
-        st.markdown(f'<div class="glass-card"><h3>{safe_title}</h3>{safe_content}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="glass-card">{safe_content}</div>', unsafe_allow_html=True)
+def glass_card(content, title=None, subtitle=None):
+    """Helper to wrap content in a premium glass card."""
+    title_html = f'<h3 style="margin-bottom:0.2rem;">{title}</h3>' if title else ""
+    subtitle_html = f'<p style="font-size:0.85rem; opacity:0.6; margin-bottom:1rem;">{subtitle}</p>' if subtitle else ""
+    st.markdown(f"""
+    <div class="glass-card">
+        {title_html}
+        {subtitle_html}
+        {content}
+    </div>
+    """, unsafe_allow_html=True)

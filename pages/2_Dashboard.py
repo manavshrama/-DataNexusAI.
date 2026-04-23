@@ -3,14 +3,14 @@ import pandas as pd
 from utils.theme import load_css, glass_card
 from utils.navigation import sidebar_nav
 from utils.data_utils import get_df_summary, infer_column_types
-from utils.chart_utils import create_histogram, create_bar_chart, create_heatmap
+import utils.chart_utils as charts
 
-st.set_page_config(page_title="DataNexusAI - Dashboard", page_icon="📊", layout="wide")
+st.set_page_config(page_title="DataNexusAI - Visual Studio", page_icon="📊", layout="wide")
 load_css()
 sidebar_nav(1)
 
 if st.session_state.get('df') is None:
-    st.warning("No data found. Please upload a dataset first.")
+    st.warning("No data universe detected. Please connect a dataset first.")
     if st.button("Go to Upload"):
         st.switch_page("pages/3_Upload.py")
     st.stop()
@@ -19,46 +19,128 @@ df = st.session_state['df']
 summary = get_df_summary(df)
 numeric_cols, categorical_cols, datetime_cols = infer_column_types(df)
 
-st.markdown(f'<h1 class="gradient-text">Dashboard</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="gradient-text">Visual Universe Studio</h1>', unsafe_allow_html=True)
+st.markdown('<p style="opacity:0.6; margin-bottom:2rem;">Navigate through high-precision galactic visualizations and multidimensional data structures.</p>', unsafe_allow_html=True)
 
-# Metrics Bar
-m_col1, m_col2, m_col3, m_col4 = st.columns(4)
-m_col1.metric("Total Rows", f"{summary['rows']:,}")
-m_col2.metric("Total columns", summary['cols'])
-m_col3.metric("Missing Values", f"{summary['nulls']:,}")
-m_col4.metric("Numeric Fields", summary['numeric_cols'])
+# --- Top Metrics Bar ---
+m1, m2, m3, m4 = st.columns(4)
+m1.metric("Universe Scale (Rows)", f"{summary['rows']:,}")
+m2.metric("Dimensionality", summary['cols'])
+m3.metric("Numeric Nodes", summary['numeric_cols'])
+m4.metric("Categories", summary['categorical_cols'])
 
-# Data Filtering in Sidebar
-with st.sidebar:
-    st.markdown("### 🔍 Filters")
-    if numeric_cols:
-        filter_col = st.selectbox("Filter by numeric range", numeric_cols)
-        min_v = float(df[filter_col].min())
-        max_v = float(df[filter_col].max())
-        val_range = st.slider(f"{filter_col} Range", min_v, max_v, (min_v, max_v))
-        df = df[(df[filter_col] >= val_range[0]) & (df[filter_col] <= val_range[1])]
+st.write("---")
 
-# Column Explorer
-st.markdown("### 🧭 Column Explorer")
-col_to_explore = st.selectbox("Select a column to visualize", df.columns)
+# --- Visual Universe Studio ---
+st.markdown("### 🌌 Studio Explorer")
+tabs = st.tabs(["📈 Distribution", "🔗 Relationship", "🍕 Composition", "🕒 Trend", "🛰️ 3D & Advanced"])
 
-exp_col1, exp_col2 = st.columns([2, 1])
+with tabs[0]: # Distribution
+    st.markdown('<div style="margin-top:1.5rem;"></div>', unsafe_allow_html=True)
+    d_col1, d_col2 = st.columns([1, 3])
+    with d_col1:
+        st.markdown("#### Config")
+        x_dist = st.selectbox("Numeric Node", numeric_cols, key="dist_x")
+        chart_type = st.radio("Technique", [
+            "Histogram (with Box)", "Box Plot", "Violin Plot", "Strip Plot", "ECDF Plot"
+        ])
+    with d_col2:
+        with st.container(border=True):
+            if chart_type == "Histogram (with Box)":
+                st.plotly_chart(charts.create_histogram(df, x_dist), use_container_width=True)
+            elif chart_type == "Box Plot":
+                st.plotly_chart(charts.create_box_plot(df, y=x_dist), use_container_width=True)
+            elif chart_type == "Violin Plot":
+                st.plotly_chart(charts.create_violin_plot(df, y=x_dist), use_container_width=True)
+            elif chart_type == "Strip Plot":
+                st.plotly_chart(charts.create_strip_plot(df, y=x_dist), use_container_width=True)
+            elif chart_type == "ECDF Plot":
+                st.plotly_chart(charts.create_ecdf_plot(df, x=x_dist), use_container_width=True)
 
-with exp_col1:
-    if col_to_explore in numeric_cols:
-        st.plotly_chart(create_histogram(df, col_to_explore), use_container_width=True)
-    elif col_to_explore in categorical_cols:
-        st.plotly_chart(create_bar_chart(df, col_to_explore), use_container_width=True)
-    else:
-        st.write("Visualizations for this data type are still in development.")
+with tabs[1]: # Relationship
+    st.markdown('<div style="margin-top:1.5rem;"></div>', unsafe_allow_html=True)
+    r_col1, r_col2 = st.columns([1, 3])
+    with r_col1:
+        st.markdown("#### Config")
+        rx = st.selectbox("Vector X", numeric_cols, key="rel_x")
+        ry = st.selectbox("Vector Y", numeric_cols, key="rel_y")
+        color_by = st.selectbox("Color Mapping", [None] + categorical_cols, key="rel_color")
+        rel_type = st.radio("Connection Type", [
+            "Scatter Plot", "Bubble Chart", "Density Contour", "Density Heatmap", "Correlation Matrix"
+        ])
+    with r_col2:
+        with st.container(border=True):
+            if rel_type == "Scatter Plot":
+                st.plotly_chart(charts.create_scatter_plot(df, rx, ry, color=color_by), use_container_width=True)
+            elif rel_type == "Bubble Chart":
+                size_by = st.selectbox("Size Mapping", numeric_cols, key="rel_size")
+                st.plotly_chart(charts.create_scatter_plot(df, rx, ry, color=color_by, size=size_by), use_container_width=True)
+            elif rel_type == "Density Contour":
+                st.plotly_chart(charts.create_density_contour(df, rx, ry), use_container_width=True)
+            elif rel_type == "Density Heatmap":
+                st.plotly_chart(charts.create_density_heatmap(df, rx, ry), use_container_width=True)
+            elif rel_type == "Correlation Matrix":
+                st.plotly_chart(charts.create_heatmap(df), use_container_width=True)
 
-with exp_col2:
-    st.markdown("#### Statistics")
-    st.write(df[col_to_explore].describe())
+with tabs[2]: # Composition
+    st.markdown('<div style="margin-top:1.5rem;"></div>', unsafe_allow_html=True)
+    c_col1, c_col2 = st.columns([1, 3])
+    with c_col1:
+        st.markdown("#### Config")
+        cat_col = st.selectbox("Categorical Core", categorical_cols, key="comp_cat")
+        val_col = st.selectbox("Value Magnitude", [None] + numeric_cols, key="comp_val")
+        comp_type = st.radio("Composition Logic", [
+            "Pie Chart", "Donut Chart", "Sunburst", "Treemap", "Funnel Chart"
+        ])
+    with c_col2:
+        with st.container(border=True):
+            if comp_type in ["Pie Chart", "Donut Chart"]:
+                st.plotly_chart(charts.create_pie_chart(df, cat_col, val_col), use_container_width=True)
+            elif comp_type == "Sunburst":
+                levels = st.multiselect("Hierarchy Levels", categorical_cols, default=[cat_col])
+                if levels:
+                    st.plotly_chart(charts.create_sunburst(df, levels, val_col), use_container_width=True)
+            elif comp_type == "Treemap":
+                levels = st.multiselect("Hierarchy Depth", categorical_cols, default=[cat_col], key="tree_levels")
+                if levels:
+                    st.plotly_chart(charts.create_treemap(df, levels, val_col), use_container_width=True)
+            elif comp_type == "Funnel Chart":
+                st.plotly_chart(charts.create_funnel(df, val_col if val_col else cat_col, cat_col), use_container_width=True)
 
-# Correlation Heatmap
-if len(numeric_cols) > 1:
-    st.markdown("### 🕸️ Correlation Heatmap")
-    st.plotly_chart(create_heatmap(df), use_container_width=True)
+with tabs[3]: # Trend
+    st.markdown('<div style="margin-top:1.5rem;"></div>', unsafe_allow_html=True)
+    t_col1, t_col2 = st.columns([1, 3])
+    with t_col1:
+        st.markdown("#### Config")
+        time_col = st.selectbox("Timeline Axis", df.columns, key="trend_x")
+        trend_y = st.selectbox("Value Vector", numeric_cols, key="trend_y")
+        trend_type = st.radio("Trend Profile", ["Line Chart", "Area Chart"])
+    with t_col2:
+        with st.container(border=True):
+            if trend_type == "Line Chart":
+                st.plotly_chart(charts.create_line_chart(df, time_col, trend_y), use_container_width=True)
+            else:
+                st.plotly_chart(charts.create_area_chart(df, time_col, trend_y), use_container_width=True)
 
-st.session_state['df_filtered'] = df
+with tabs[4]: # 3D & Advanced
+    st.markdown('<div style="margin-top:1.5rem;"></div>', unsafe_allow_html=True)
+    a_col1, a_col2 = st.columns([1, 3])
+    with a_col1:
+        st.markdown("#### Config")
+        adv_type = st.radio("Advanced Geometry", [
+            "3D Scatter Plot", "Parallel Categories", "Parallel Coordinates", "Scatter Matrix"
+        ])
+    with a_col2:
+        with st.container(border=True):
+            if adv_type == "3D Scatter Plot":
+                z3 = st.selectbox("Z Vector", numeric_cols, key="3d_z")
+                st.plotly_chart(charts.create_3d_scatter(df, rx, ry, z3, color=color_by), use_container_width=True)
+            elif adv_type == "Parallel Categories":
+                dims = st.multiselect("Dimensions", categorical_cols, default=categorical_cols[:3])
+                if dims: st.plotly_chart(charts.create_parallel_categories(df, dims, color=numeric_cols[0] if numeric_cols else None), use_container_width=True)
+            elif adv_type == "Parallel Coordinates":
+                dims = st.multiselect("Numeric Planes", numeric_cols, default=numeric_cols[:4])
+                if dims: st.plotly_chart(charts.create_parallel_coordinates(df, dims), use_container_width=True)
+            elif adv_type == "Scatter Matrix":
+                dims = st.multiselect("Matrix Nodes", numeric_cols, default=numeric_cols[:3])
+                if dims: st.plotly_chart(charts.create_scatter_matrix(df, dims, color=color_by), use_container_width=True)

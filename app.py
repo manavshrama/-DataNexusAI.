@@ -1,4 +1,3 @@
-# DATA NEXUS AI - UNIVERSAL ENGINE v1.1.0 (FORCE DEPLOY)
 import sys
 
 # Standard Fix for ChromaDB/SQLite version conflict on Streamlit Cloud
@@ -40,70 +39,81 @@ def init_state():
 init_state()
 load_css()
 
-# ── Sidebar Navigation ──
-from utils.navigation import sidebar_nav
-sidebar_nav(0)
+# ── Sidebar Branding ──
+with st.sidebar:
+    st.markdown('<h1 class="gradient-text" style="font-size:1.8rem; margin-bottom:0;">🌌 DataNexusAI</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:0.8rem; opacity:0.5; margin-left:2.4rem;">v1.2.0 | Advanced Intelligence</p>', unsafe_allow_html=True)
+    st.write("---")
 
-# ── Home Page Content ──
-# (This file IS the home page in Streamlit's multi-page layout)
-
+# ── Hero Section ──
 st.markdown("""
-<div class="glass-card" style="text-align: center; padding: 4rem 2rem; margin-bottom: 2rem;">
-    <h1 class="gradient-text" style="font-size: 3.2rem; margin-bottom: 0.5rem;">
-        DataNexusAI
+<div style="text-align: center; padding: 3rem 0 4rem 0;">
+    <h1 class="gradient-text" style="font-size: 4.5rem; line-height: 1.1; margin-bottom: 1rem;">
+        The Next Frontier of<br>Data Intelligence
     </h1>
-    <p style="font-size: 1.3rem; opacity: 0.85; margin-bottom: 0.2rem;">
-        Your AI-Powered Data Universe
-    </p>
-    <p style="font-size: 1rem; opacity: 0.55;">
-        Unlock insights with advanced analysis, AI chat, and no-code machine learning.
+    <p style="font-size: 1.4rem; color: rgba(255,255,255,0.7); max-width: 800px; margin: 0 auto 2.5rem auto;">
+        Experience seamless AI-driven analysis, visual exploration, and machine learning 
+        within a high-performance glassmorphism ecosystem.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-cta1, cta2 = st.columns(2)
-with cta1:
-    if st.button("🚀  Upload Data", use_container_width=True):
-        st.switch_page("pages/3_Upload.py")
-with cta2:
-    if st.button("💬  Start AI Chat", use_container_width=True):
+# ── Primary Actions ──
+c1, c2, c3 = st.columns([1, 1, 1])
+
+with c1:
+    st.markdown("""
+    <div class="glass-card" style="min-height: 280px; text-align: center; border-bottom: 4px solid #6C63FF;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">📊</h2>
+        <h3 class="gradient-text">Studio</h3>
+        <p style="font-size: 0.95rem; opacity: 0.7; margin-bottom: 1.5rem;">Explore 35+ advanced chart types in our high-precision Visual Universe.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Open Dashboard", use_container_width=True):
+        st.switch_page("pages/2_Dashboard.py")
+
+with c2:
+    st.markdown("""
+    <div class="glass-card" style="min-height: 280px; text-align: center; border-bottom: 4px solid #00C9A7;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">🤖</h2>
+        <h3 class="gradient-text">AI Chat</h3>
+        <p style="font-size: 0.95rem; opacity: 0.7; margin-bottom: 1.5rem;">Talk to your data. Generate visuals and cleaned files via natural language.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Start Chat", use_container_width=True):
         st.switch_page("pages/4_Chat.py")
 
-st.write("")
+with c3:
+    st.markdown("""
+    <div class="glass-card" style="min-height: 280px; text-align: center; border-bottom: 4px solid #845EC2;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">🧠</h2>
+        <h3 class="gradient-text">ML Forge</h3>
+        <p style="font-size: 0.95rem; opacity: 0.7; margin-bottom: 1.5rem;">Train, evaluate, and export professional models in a few clicks.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Access Forge", use_container_width=True):
+        st.switch_page("pages/5_ML_Studio.py")
 
-# Feature cards
-cols = st.columns(3)
-features = [
-    ("📊", "Data Analysis", "Auto-generate rich visualizations and deep statistical insights from any dataset."),
-    ("🤖", "AI Chat", "Talk to your data in natural language and get instant, contextual answers."),
-    ("⚡", "ML Studio", "Train, evaluate, and deploy ML models — no code required."),
+st.write("---")
+
+# ── Platform Stats ──
+s1, s2, s3, s4 = st.columns(4)
+stats = [
+    ("Processing Speed", "1.2 GB/s", "⚡"),
+    ("Visual Variety", "35+ Types", "🎨"),
+    ("Model Accuracy", "Up to 99%", "🎯"),
+    ("Uptime", "99.9%", "🛡️")
 ]
-for col, (icon, title, desc) in zip(cols, features):
+
+for col, (label, val, icon) in zip([s1, s2, s3, s4], stats):
     with col:
         st.markdown(f"""
-        <div class="glass-card" style="min-height: 180px;">
-            <h2 style="margin-bottom: 0.5rem;">{icon}</h2>
-            <h3 style="margin-bottom: 0.5rem;">{title}</h3>
-            <p style="opacity: 0.7; font-size: 0.95rem;">{desc}</p>
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 1.5rem; text-align: center;">
+            <p style="font-size: 0.8rem; opacity: 0.5; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">{label}</p>
+            <h2 style="margin: 0; color: #00C9A7;">{icon} {val}</h2>
         </div>
         """, unsafe_allow_html=True)
 
 st.write("")
-
-# Metrics
-st.markdown("### Platform Pulse")
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("Datasets Analyzed", "1,248", "+12%")
-m2.metric("Models Trained", "452", "+5%")
-m3.metric("Queries Answered", "15.4K", "+8%")
-m4.metric("Charts Generated", "8.9K", "+20%")
-
-st.write("")
-
-with st.expander("📖 New to DataNexusAI? Get started in 4 steps"):
-    st.markdown("""
-    1. **Upload** — Drop your CSV / Excel into the Upload page.
-    2. **Dashboard** — View automated visualizations and data profiles.
-    3. **AI Chat** — Ask natural-language questions about your data.
-    4. **ML Studio** — Select a target, pick models, train, predict.
-    """)
+if st.button("🚀  Start by Uploading Your Dataset", use_container_width=True):
+    st.switch_page("pages/3_Upload.py")
