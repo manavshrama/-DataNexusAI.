@@ -241,8 +241,8 @@ def load_css():
         overflow: hidden;
     }
 
-    /* Hide Defaults */
-    #MainMenu {visibility: hidden;}
+    /* Show Defaults */
+    #MainMenu {visibility: visible;}
     footer {visibility: hidden;}
     .block-container { padding-top: 1.5rem; padding-bottom: 3rem; }
 
