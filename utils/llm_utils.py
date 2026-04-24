@@ -1,5 +1,5 @@
 from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage, SystemMessage, AIMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 import streamlit as st
 
 def get_chat_response(messages, api_key, dataset_summary="", data_snapshot=""):

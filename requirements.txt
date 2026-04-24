@@ -19,6 +19,7 @@ streamlit-lottie
 langchain
 langchain-openai
 langchain-community
+langchain-core
 openai
 python-dotenv
 pysqlite3-binary
