@@ -9,7 +9,7 @@ import re
 from utils.theme import load_css, glass_card, render_hero
 from components.sidebar_ui import render_sidebar
 from services.vector_store import initialize_vector_store
-from services.chat_engine import ChatEngine
+from utils.llm_utils import get_chat_response
 
 st.set_page_config(page_title="DataNexusAI - Chat", page_icon="💬", layout="wide", initial_sidebar_state="expanded")
 load_css()
@@ -111,8 +111,11 @@ with st.sidebar:
             "Provide code to handle missing values and download the result"
         ],
         "Visuals": [
-            "Create an interactive scatter plot matrix (Plotly)",
-            "Show a pairplot for the most variant columns"
+            "Create a Sunburst chart for categorical hierarchy",
+            "Generate a Violin plot to show distribution density",
+            "Show a Treemap of the composition",
+            "Plot a correlation heatmap with annotations",
+            "Create an interactive Choropleth map if location data exists"
         ]
     }
 
