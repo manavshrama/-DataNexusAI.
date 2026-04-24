@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
-from utils.theme import load_css, glass_card
+from utils.theme import load_css, glass_card, render_hero
 from utils.navigation import sidebar_nav
 from utils.data_utils import infer_column_types
 
@@ -10,8 +10,7 @@ st.set_page_config(page_title="DataNexusAI - ML Forge", page_icon="🧠", layout
 load_css()
 sidebar_nav(4)
 
-st.markdown('<h1 class="gradient-text">Neural Machine Forge</h1>', unsafe_allow_html=True)
-st.markdown('<p style="opacity:0.6; margin-bottom:2.5rem;">Configure precision pipelines, train competitive models, and deploy instant predictions.</p>', unsafe_allow_html=True)
+render_hero("ML Studio", "Configure, train, and monitor your model in one workflow")
 
 if st.session_state.get('df') is None:
     st.warning("No dataset detected in the nexus. Please upload data first.")

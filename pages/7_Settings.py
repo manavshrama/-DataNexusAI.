@@ -1,19 +1,16 @@
 import streamlit as st
-from utils.theme import load_css, glass_card
+from utils.theme import load_css, glass_card, render_hero
 from utils.navigation import sidebar_nav
 
 st.set_page_config(page_title="DataNexusAI - System Core", page_icon="⚙️", layout="wide")
 load_css()
 sidebar_nav(6) 
 
-st.markdown('<h1 class="gradient-text">Nexus System Core</h1>', unsafe_allow_html=True)
-st.markdown('<p style="opacity:0.6; margin-bottom:2.5rem;">Calibrate your AI environment, security keys, and visual resonance.</p>', unsafe_allow_html=True)
+render_hero("Control Center", "Configure your API keys, preferences, and workspace options")
 
 # ── API Integration Center ──────────────────────────────────────────────
 st.markdown("### 🔑 Intelligence Keys")
-with st.container(border=True):
-    st.markdown('<p style="font-size:0.9rem; opacity:0.6; margin-bottom:1.5rem;">Synchronize with external LLM clusters to power the Nexus Chat engine.</p>', unsafe_allow_html=True)
-    
+with st.container():
     col1, col2 = st.columns(2)
     with col1:
         groq_key = st.text_input("Groq Cloud Key", type="password", placeholder="gsk_...")
@@ -31,7 +28,7 @@ with st.container(border=True):
 # ── Performance & Aesthetics ───────────────────────────────────────────
 st.markdown('<div style="margin-top:2rem;"></div>', unsafe_allow_html=True)
 st.markdown("### 🎨 Visual Calibration")
-with st.container(border=True):
+with st.container():
     col_a, col_b = st.columns(2)
     with col_a:
         theme = st.selectbox("Interface Spectrum", ["Nexus Noir (Obsidian)", "Solar Flare (Light Mode - Soon)"], index=0)
@@ -46,7 +43,7 @@ with st.container(border=True):
 # ── Memory Management ──────────────────────────────────────────────────
 st.markdown('<div style="margin-top:2rem;"></div>', unsafe_allow_html=True)
 st.markdown("### ⚠️ Memory Purge")
-with st.container(border=True):
+with st.container():
     st.markdown('<p style="font-size:0.9rem; opacity:0.6;">Warning: This will disconnect all linked datasets and purge chat history from the current session.</p>', unsafe_allow_html=True)
     if st.button("🗑️ Reset All Neural Data", use_container_width=True):
         st.session_state.clear()

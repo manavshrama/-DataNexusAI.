@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import re
-from utils.theme import load_css, glass_card
+from utils.theme import load_css, glass_card, render_hero
 from utils.navigation import sidebar_nav
 from utils.llm_utils import get_chat_response
 
@@ -14,7 +14,7 @@ st.set_page_config(page_title="DataNexusAI - AI Chat", page_icon="💬", layout=
 load_css()
 sidebar_nav(3)
 
-st.markdown('<h1 class="gradient-text">AI Data Analyst</h1>', unsafe_allow_html=True)
+render_hero("Neural Chat", "Ask anything about your data. Get code, charts, and insights instantly.")
 
 # Initialize Session State
 if 'messages' not in st.session_state:

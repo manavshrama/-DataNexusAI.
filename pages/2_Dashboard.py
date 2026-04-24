@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils.theme import load_css, glass_card
+from utils.theme import load_css, glass_card, render_hero
 from utils.navigation import sidebar_nav
 from utils.data_utils import get_df_summary, infer_column_types
 import utils.chart_utils as charts
@@ -19,8 +19,7 @@ df = st.session_state['df']
 summary = get_df_summary(df)
 numeric_cols, categorical_cols, datetime_cols = infer_column_types(df)
 
-st.markdown('<h1 class="gradient-text">Visual Universe Studio</h1>', unsafe_allow_html=True)
-st.markdown('<p style="opacity:0.6; margin-bottom:2rem;">Navigate through high-precision galactic visualizations and multidimensional data structures.</p>', unsafe_allow_html=True)
+render_hero("Platform Pulse", "Live metrics and activity overview for your ML workspace")
 
 # --- Top Metrics Bar ---
 m1, m2, m3, m4 = st.columns(4)
@@ -28,6 +27,50 @@ m1.metric("Universe Scale (Rows)", f"{summary['rows']:,}")
 m2.metric("Dimensionality", summary['cols'])
 m3.metric("Numeric Nodes", summary['numeric_cols'])
 m4.metric("Categories", summary['categorical_cols'])
+
+# --- Activity & Trends Row ---
+st.write("")
+c_feed, c_trend = st.columns([1, 1])
+
+with c_feed:
+    st.markdown("### 📡 Live Activity Feed")
+    feed_items = [
+        ("ML Studio", "Neural Forge initiated for 'XGBoost'", "2m ago", "🟢"),
+        ("Data Nexus", "New dataset 'customer_v2.csv' linked", "15m ago", "🔵"),
+        ("Neural Chat", "Analytical query: 'Show sales trend'", "1h ago", "✨")
+    ]
+    for source, text, time, icon in feed_items:
+        st.markdown(f"""
+        <div class="glass-card" style="padding: 1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 1.5rem;">{icon}</div>
+            <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="color: #6C63FF; font-size: 0.8rem;">{source.upper()}</strong>
+                    <span style="opacity: 0.4; font-size: 0.7rem;">{time}</span>
+                </div>
+                <div style="font-size: 0.95rem; opacity: 0.8;">{text}</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+with c_trend:
+    st.markdown("### 📈 Neural Performance Trend")
+    # Mock sparkline
+    import numpy as np
+    import plotly.graph_objects as go
+    
+    x = np.linspace(0, 10, 20)
+    y = np.sin(x) * 0.2 + 0.8 + np.random.normal(0, 0.05, 20)
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x, y=y, fill='tozeroy', line=dict(color='#00C9A7', width=3), fillcolor='rgba(0, 201, 167, 0.1)'))
+    fig.update_layout(
+        height=180, margin=dict(l=0, r=0, t=0, b=0),
+        xaxis=dict(visible=False), yaxis=dict(visible=False),
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)'
+    )
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.markdown('<p style="text-align:center; opacity:0.5; font-size:0.8rem;">Nexus Processing Efficiency: +12.4% (Last 24h)</p>', unsafe_allow_html=True)
 
 st.write("---")
 

@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils.theme import load_css, glass_card
+from utils.theme import load_css, glass_card, render_hero
 from utils.navigation import sidebar_nav
 from utils.data_utils import process_data
 
@@ -8,20 +8,9 @@ st.set_page_config(page_title="DataNexusAI - Gateway", page_icon="📂", layout=
 load_css()
 sidebar_nav(2)
 
-st.markdown('<h1 class="gradient-text">Nexus Data Gateway</h1>', unsafe_allow_html=True)
-st.markdown('<p style="opacity:0.6; margin-bottom:2rem;">Bridge your local datasets into the Nexus intelligence core.</p>', unsafe_allow_html=True)
+render_hero("Data Nexus", "Upload your dataset and let the engine take over")
 
-# ── The Dropzone ───────────────────────────────────────────────────────
-st.markdown("""
-<div class="glass-card" style="border: 2px dashed rgba(108, 99, 255, 0.4); text-align: center; padding: 4rem 2rem;">
-    <h2 style="font-size: 3rem; margin-bottom: 1rem;">🛰️</h2>
-    <h2 class="gradient-text">Initialize Connection</h2>
-    <p style="font-size: 1.1rem; opacity: 0.7; margin-bottom: 0;">Drag & drop your files into the field below</p>
-    <p style="font-size: 0.85rem; opacity: 0.4;">Supported Formats: CSV, XLSX, JSON (Max 50MB)</p>
-</div>
-""", unsafe_allow_html=True)
-
-uploaded_file = st.file_uploader("", type=["csv", "xlsx", "json"], label_visibility="collapsed")
+uploaded_file = st.file_uploader("Upload Data", type=["csv", "xlsx", "json"])
 
 if uploaded_file is not None:
     with st.spinner("Synchronizing data nodes..."):
@@ -55,7 +44,7 @@ if st.session_state.get('df') is not None:
         
     with col2:
         st.markdown("### 🧭 Dimensional Schema")
-        with st.container(border=True):
+        with st.container():
             schema_df = pd.DataFrame({
                 "Dimension": df.columns,
                 "Type": df.dtypes.astype(str),

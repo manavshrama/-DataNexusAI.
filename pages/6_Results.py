@@ -1,14 +1,13 @@
 import streamlit as st
 import pandas as pd
-from utils.theme import load_css, glass_card
+from utils.theme import load_css, glass_card, render_hero
 from utils.navigation import sidebar_nav
 
 st.set_page_config(page_title="DataNexusAI - Results", page_icon="🏆", layout="wide")
 load_css()
 sidebar_nav(5)
 
-st.markdown('<h1 class="gradient-text">Results & Executive Reports</h1>', unsafe_allow_html=True)
-st.markdown('<p style="opacity:0.6; margin-bottom:2rem;">Review model performance metrics, generated insights, and export your findings.</p>', unsafe_allow_html=True)
+render_hero("Results Vault", "Evaluate performance, explore predictions, and export your model")
 
 # ── Summary Cards ──────────────────────────────────────────────────────
 c1, c2, c3 = st.columns(3)

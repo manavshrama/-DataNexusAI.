@@ -9,7 +9,8 @@ except ImportError:
     pass
 
 import streamlit as st
-from utils.constants import CUSTOM_CSS, PAGE_TITLE, PAGE_ICON, APP_HEADER
+from utils.constants import PAGE_TITLE, PAGE_ICON, APP_HEADER
+from utils.theme import load_css, render_hero
 from services.vector_store import initialize_vector_store
 from services.session_manager import init_session_state
 from components.sidebar_ui import render_sidebar
@@ -27,7 +28,7 @@ from components.tab_renderers import (
 st.set_page_config(page_title=PAGE_TITLE, page_icon=PAGE_ICON, layout="wide")
 
 # --- CUSTOM CSS ---
-st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+load_css()
 
 # Keep-alive is handled by services/session_manager.py
 
@@ -40,7 +41,7 @@ render_sidebar()
 
 
 # --- MAIN APP ---
-st.title(APP_HEADER)
+# st.title(APP_HEADER) is removed in favor of per-tab heroes
 st.sidebar.caption("Build: 2026.03.28-v1.1 (Modularized)")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
