@@ -68,7 +68,7 @@ class ChatbotModule:
         if self.gemini_key:
             try:
                 genai.configure(api_key=self.gemini_key)
-                model = genai.GenerativeModel('gemini-1.5-flash', 
+                model = genai.GenerativeModel('gemini-1.5-flash-latest', 
                                               generation_config={"response_mime_type": "application/json"})
                 res = model.generate_content([self.system_prompt, prompt])
                 return json.loads(res.text)
