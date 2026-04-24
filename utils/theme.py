@@ -51,17 +51,6 @@ def load_css():
         color: var(--text-muted);
     }
 
-    /* Floating Navigation Sidebar */
-    section[data-testid="stSidebar"] {
-        background-color: rgba(13, 13, 26, 0.8) !important;
-        backdrop-filter: blur(20px);
-        border-right: 1px solid var(--glass-border);
-    }
-    
-    /* Hide default sidebar content text color issues */
-    section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] span {
-        color: var(--text-muted) !important;
-    }
 
     /* High-Refraction Glass Card */
     .glass-card {
