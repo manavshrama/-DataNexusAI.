@@ -22,7 +22,6 @@ from components.tab_renderers import (
     render_ml_tab,
     render_chat_tab,
     render_export_tab,
-    render_insights_tab,
 )
 
 # --- PAGE CONFIG ---
@@ -49,7 +48,7 @@ render_unified_sidebar(default_index=0)
 # st.title(APP_HEADER) is removed in favor of per-tab heroes
 st.sidebar.caption("Build: 2026.03.28-v1.1 (Modularized)")
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     [
         "📂 Upload",
         "📊 EDA",
@@ -57,7 +56,6 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
         "🤖 ML Lab",
         "💬 AI Chat",
         "📥 Export",
-        "🔮 Insights",
     ]
 )
 
@@ -79,5 +77,4 @@ with tab5:
 with tab6:
     render_export_tab()
 
-with tab7:
-    render_insights_tab()
+

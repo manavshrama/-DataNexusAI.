@@ -8,7 +8,7 @@ def render_unified_sidebar(default_index=0):
         st.markdown('<h2 class="gradient-text">DataNexus AI</h2>', unsafe_allow_html=True)
         st.markdown('---')
         
-        # GRAFT: Navigation Menu
+        # Navigation Menu
         options = ["Home", "Dashboard", "Upload Data", "AI Chat", "ML Studio", "Results", "Settings"]
         icons = ["house", "speedometer2", "cloud-upload", "chat-dots", "cpu", "clipboard-data", "gear"]
         
@@ -24,20 +24,21 @@ def render_unified_sidebar(default_index=0):
         
         st.markdown('---')
         
-        # GRAFT: API & Settings
-        with st.expander("🔑 API Configuration", expanded=False):
-            st.session_state.groq_key = st.text_input("Groq API Key", value=st.session_state.get('groq_key', ''), type="password")
-            st.session_state.gemini_key = st.text_input("Gemini API Key", value=st.session_state.get('gemini_key', ''), type="password")
+        # API Configuration
+        st.subheader("🔑 API Configuration")
+        st.session_state.groq_key = st.text_input("Groq API Key", value=st.session_state.get('groq_key', ''), type="password")
+        st.session_state.gemini_key = st.text_input("Gemini API Key", value=st.session_state.get('gemini_key', ''), type="password")
         
-        # GRAFT: Active Data Stats
+        # Active Data Stats
         if st.session_state.get('df') is not None:
-            with st.expander("📊 Active Nexus Data", expanded=True):
-                st.caption(f"**Source:** {st.session_state.file_name}")
-                stats = DataLoader.get_stats(st.session_state.df)
-                st.caption(f"**Rows:** {stats['rows']:,} | **Cols:** {stats['cols']}")
-                if st.button("Reset Data", use_container_width=True):
-                    st.session_state.df = st.session_state.df_original.copy()
-                    st.rerun()
+            st.markdown('---')
+            st.subheader("📊 Active Dataset")
+            st.caption(f"**Source:** {st.session_state.get('file_name', 'Unknown')}")
+            stats = DataLoader.get_stats(st.session_state.df)
+            st.caption(f"**Rows:** {stats['rows']:,} | **Cols:** {stats['cols']}")
+            if st.button("Reset Data", use_container_width=True):
+                st.session_state.df = st.session_state.df_original.copy()
+                st.rerun()
         
         st.markdown("---")
         if st.button("🔓 Sign Out", use_container_width=True):
