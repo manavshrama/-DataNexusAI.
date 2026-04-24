@@ -6,7 +6,7 @@ from utils.theme import load_css, glass_card, render_hero
 from components.sidebar_ui import render_sidebar
 from utils.data_utils import infer_column_types
 
-st.set_page_config(page_title="DataNexusAI - ML Studio", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="DataNexusAI - ML Studio", page_icon="🤖", layout="wide", initial_sidebar_state="expanded")
 load_css()
 render_sidebar()
 

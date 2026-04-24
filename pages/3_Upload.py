@@ -6,7 +6,7 @@ from modules.data_loader import DataLoader
 from services.vector_store import initialize_vector_store
 from utils.data_utils import process_data
 
-st.set_page_config(page_title="DataNexusAI - Upload", page_icon="📂", layout="wide")
+st.set_page_config(page_title="DataNexusAI - Upload", page_icon="📂", layout="wide", initial_sidebar_state="expanded")
 load_css()
 render_sidebar()
 

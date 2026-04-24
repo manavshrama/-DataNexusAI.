@@ -24,7 +24,7 @@ from components.tab_renderers import (
 )
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title=PAGE_TITLE, page_icon=PAGE_ICON, layout="wide")
+st.set_page_config(page_title=PAGE_TITLE, page_icon=PAGE_ICON, layout="wide", initial_sidebar_state="expanded")
 
 # --- CUSTOM CSS ---
 load_css()

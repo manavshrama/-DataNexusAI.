@@ -244,7 +244,6 @@ def load_css():
     /* Hide Defaults */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
     .block-container { padding-top: 1.5rem; padding-bottom: 3rem; }
 
     /* Streamlit Tab Styling Overhaul */

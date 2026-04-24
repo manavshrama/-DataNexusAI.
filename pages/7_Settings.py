@@ -2,7 +2,7 @@ import streamlit as st
 from utils.theme import load_css, glass_card, render_hero
 from components.sidebar_ui import render_sidebar
 
-st.set_page_config(page_title="DataNexusAI - Settings", page_icon="⚙️", layout="wide")
+st.set_page_config(page_title="DataNexusAI - Settings", page_icon="⚙️", layout="wide", initial_sidebar_state="expanded")
 load_css()
 render_sidebar()
 

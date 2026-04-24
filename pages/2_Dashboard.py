@@ -5,7 +5,7 @@ from components.sidebar_ui import render_sidebar
 from utils.data_utils import get_df_summary, infer_column_types
 import utils.chart_utils as charts
 
-st.set_page_config(page_title="DataNexusAI - Dashboard", page_icon="📊", layout="wide")
+st.set_page_config(page_title="DataNexusAI - Dashboard", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
 load_css()
 render_sidebar()
 

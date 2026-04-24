@@ -11,7 +11,7 @@ from components.sidebar_ui import render_sidebar
 from services.vector_store import initialize_vector_store
 from services.chat_engine import ChatEngine
 
-st.set_page_config(page_title="DataNexusAI - Chat", page_icon="💬", layout="wide")
+st.set_page_config(page_title="DataNexusAI - Chat", page_icon="💬", layout="wide", initial_sidebar_state="expanded")
 load_css()
 render_sidebar()
 
