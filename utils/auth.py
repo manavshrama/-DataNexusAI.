@@ -1,32 +1,17 @@
 import streamlit as st
 import time
 from utils.theme import load_css, glass_card
-import extra_streamlit_components as stx
-
-@st.cache_resource
-def get_cookie_manager():
-    return stx.CookieManager()
 
 def check_auth():
     """Returns True if user is authenticated, else renders login and returns False."""
-    cookie_manager = get_cookie_manager()
-    
-    # 1. Check Streamlit's temporary memory
+    # Check Streamlit's memory
     if st.session_state.get("authenticated", False):
         return True
         
-    # 2. If not in memory, check the browser's persistent cookies
-    # Note: cookie_manager.get() might return None on the very first microsecond of page load
-    cached_email = cookie_manager.get(cookie="nexus_user_email")
-    if cached_email:
-        st.session_state.authenticated = True
-        st.session_state.user_email = cached_email
-        return True
-    
-    render_login_page(cookie_manager)
+    render_login_page()
     return False
 
-def render_login_page(cookie_manager):
+def render_login_page():
     load_css()
     
     # Center the login card
@@ -53,13 +38,10 @@ def render_login_page(cookie_manager):
                 
                 if submitted:
                     if "@" in email_input and "." in email_input:
-                        # Save to browser memory (Cookie) so it survives refresh!
-                        cookie_manager.set("nexus_user_email", email_input, key="set_cookie")
-                        
                         st.session_state.authenticated = True
                         st.session_state.user_email = email_input
                         st.success(f"Welcome, {email_input}! Initializing Neural Forge...")
-                        time.sleep(1.5) # Give the cookie a moment to save
+                        time.sleep(1)
                         st.rerun()
                     else:
                         st.error("Please enter a valid email address to proceed.")
@@ -77,8 +59,5 @@ def render_login_page(cookie_manager):
             """, unsafe_allow_html=True)
 
 def logout():
-    cookie_manager = get_cookie_manager()
-    cookie_manager.delete("nexus_user_email", key="delete_cookie")
     st.session_state.authenticated = False
-    time.sleep(0.5)
     st.rerun()
