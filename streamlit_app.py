@@ -13,7 +13,8 @@ from utils.constants import PAGE_TITLE, PAGE_ICON, APP_HEADER
 from utils.theme import load_css, render_hero
 from services.vector_store import initialize_vector_store
 from services.session_manager import init_session_state
-from components.sidebar_ui import render_sidebar
+from utils.auth import check_auth, logout
+from utils.navigation import render_unified_sidebar
 from components.tab_renderers import (
     render_upload_tab,
     render_eda_tab,
@@ -36,8 +37,12 @@ load_css()
 init_session_state()
 embedder, chroma_client, chat_collection, doc_collection = initialize_vector_store()
 
+# --- AUTH CHECK ---
+if not check_auth():
+    st.stop()
+
 # --- SIDEBAR ---
-render_sidebar()
+render_unified_sidebar(default_index=0)
 
 
 # --- MAIN APP ---

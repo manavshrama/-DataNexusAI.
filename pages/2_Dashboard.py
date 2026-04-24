@@ -1,13 +1,16 @@
 import streamlit as st
 import pandas as pd
 from utils.theme import load_css, glass_card, render_hero
-from utils.navigation import sidebar_nav
+from utils.auth import check_auth
+from utils.navigation import render_unified_sidebar
 from utils.data_utils import get_df_summary, infer_column_types
 import utils.chart_utils as charts
 
-st.set_page_config(page_title="DataNexusAI - Visual Studio", page_icon="📊", layout="wide")
+st.set_page_config(page_title="DataNexusAI - Dashboard", page_icon="📊", layout="wide")
+if not check_auth():
+    st.stop()
 load_css()
-sidebar_nav(1)
+render_unified_sidebar(1)
 
 if st.session_state.get('df') is None:
     st.warning("No data universe detected. Please connect a dataset first.")

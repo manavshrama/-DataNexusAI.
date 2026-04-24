@@ -7,12 +7,15 @@ import seaborn as sns
 import plotly.express as px
 import re
 from utils.theme import load_css, glass_card, render_hero
-from utils.navigation import sidebar_nav
+from utils.auth import check_auth
+from utils.navigation import render_unified_sidebar
 from utils.llm_utils import get_chat_response
 
 st.set_page_config(page_title="DataNexusAI - AI Chat", page_icon="💬", layout="wide")
+if not check_auth():
+    st.stop()
 load_css()
-sidebar_nav(3)
+render_unified_sidebar(3)
 
 render_hero("Neural Chat", "Ask anything about your data. Get code, charts, and insights instantly.")
 
