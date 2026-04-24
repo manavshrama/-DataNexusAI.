@@ -3,15 +3,12 @@ import pandas as pd
 import numpy as np
 import time
 from utils.theme import load_css, glass_card, render_hero
-from utils.auth import check_auth
-from utils.navigation import render_unified_sidebar
+from components.sidebar_ui import render_sidebar
 from utils.data_utils import infer_column_types
 
-st.set_page_config(page_title="DataNexusAI - ML Forge", page_icon="🧠", layout="wide")
-if not check_auth():
-    st.stop()
+st.set_page_config(page_title="DataNexusAI - ML Studio", page_icon="🤖", layout="wide")
 load_css()
-render_unified_sidebar(4)
+render_sidebar()
 
 render_hero("ML Studio", "Configure, train, and monitor your model in one workflow")
 

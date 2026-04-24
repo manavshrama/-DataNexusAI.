@@ -1,13 +1,10 @@
 import streamlit as st
 from utils.theme import load_css, glass_card, render_hero
-from utils.auth import check_auth
-from utils.navigation import render_unified_sidebar
+from components.sidebar_ui import render_sidebar
 
-st.set_page_config(page_title="DataNexusAI - System Core", page_icon="⚙️", layout="wide")
-if not check_auth():
-    st.stop()
+st.set_page_config(page_title="DataNexusAI - Settings", page_icon="⚙️", layout="wide")
 load_css()
-render_unified_sidebar(6) 
+render_sidebar()
 
 render_hero("Control Center", "Configure your API keys, preferences, and workspace options")
 

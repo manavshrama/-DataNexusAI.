@@ -1,14 +1,11 @@
 import streamlit as st
 import pandas as pd
 from utils.theme import load_css, glass_card, render_hero
-from utils.auth import check_auth
-from utils.navigation import render_unified_sidebar
+from components.sidebar_ui import render_sidebar
 
-st.set_page_config(page_title="DataNexusAI - Results", page_icon="🏆", layout="wide")
-if not check_auth():
-    st.stop()
+st.set_page_config(page_title="DataNexusAI - Results", page_icon="📥", layout="wide")
 load_css()
-render_unified_sidebar(5)
+render_sidebar()
 
 render_hero("Results Vault", "Evaluate performance, explore predictions, and export your model")
 

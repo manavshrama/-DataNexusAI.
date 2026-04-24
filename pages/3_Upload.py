@@ -1,15 +1,14 @@
 import streamlit as st
 import pandas as pd
 from utils.theme import load_css, glass_card, render_hero
-from utils.auth import check_auth
-from utils.navigation import render_unified_sidebar
+from components.sidebar_ui import render_sidebar
+from modules.data_loader import DataLoader
+from services.vector_store import initialize_vector_store
 from utils.data_utils import process_data
 
-st.set_page_config(page_title="DataNexusAI - Gateway", page_icon="📂", layout="wide")
-if not check_auth():
-    st.stop()
+st.set_page_config(page_title="DataNexusAI - Upload", page_icon="📂", layout="wide")
 load_css()
-render_unified_sidebar(2)
+render_sidebar()
 
 render_hero("Data Nexus", "Upload your dataset and let the engine take over")
 
