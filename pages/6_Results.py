@@ -16,7 +16,7 @@ with c1:
     df = st.session_state.get('df')
     if df is not None:
         with glass_card(title="Active Dataset", subtitle="Data Source Connectivity"):
-            st.markdown(content, unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align:center; padding:1rem; font-size:2rem; font-weight:800;">{df.shape[1]} <span style="font-size:1rem; font-weight:300; opacity:0.6;">COLS</span></div>', unsafe_allow_html=True)
     else:
         with glass_card(title="Dataset", subtitle="Disconnected"):
             st.markdown('<div style="text-align:center; padding:1rem; opacity:0.5;">No active data universe found.</div>', unsafe_allow_html=True)
@@ -26,9 +26,9 @@ with c2:
     if results:
         task = st.session_state.get('ml_task', 'Classification')
         metric_key = "Accuracy" if task == "Classification" else "R² Score"
-        best = max(results, key=lambda r: r.get(metric_key, 0))
+        best_val = max([r.get(metric_key, 0) for r in results])
         with glass_card(title="Top Performer", subtitle="Best Trained Model"):
-            st.markdown(content, unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align:center; padding:1rem; font-size:2rem; font-weight:800;">{best_val:.2f} <span style="font-size:1rem; font-weight:300; opacity:0.6;">{metric_key}</span></div>', unsafe_allow_html=True)
     else:
         with glass_card(title="Model Performance", subtitle="Inactive"):
             st.markdown('<div style="text-align:center; padding:1rem; opacity:0.5;">Forge a model to see performance.</div>', unsafe_allow_html=True)
@@ -36,7 +36,7 @@ with c2:
 with c3:
     chat_count = len(st.session_state.get('messages', []))
     with glass_card(title="AI Intelligence", subtitle="Nexus Chat Logs"):
-        st.markdown(content, unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center; padding:1rem; font-size:2rem; font-weight:800;">{chat_count} <span style="font-size:1rem; font-weight:300; opacity:0.6;">MESSAGES</span></div>', unsafe_allow_html=True)
 
 st.write("---")
 
