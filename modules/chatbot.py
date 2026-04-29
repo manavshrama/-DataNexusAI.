@@ -29,37 +29,57 @@ class ChatbotModule:
         - Advanced: Sankey Diagram, Funnel Chart, Parallel Coordinates, Radar/Spider Chart, Choropleth Map.
         
         ### EXECUTION RULES:
+        - OUTPUT ONLY VALID JSON. NO PREAMBLE. NO COMMENTARY.
+        - LIMIT "answer" field to max 3 punchy, technical sentences or bullet points.
         - ALWAYS wrap Python code in ```python blocks.
         - PREFER Plotly: `import plotly.express as px`. Use `st.plotly_chart(fig, use_container_width=True)`.
-        - USE Seaborn/Matplotlib for complex stats: `fig, ax = plt.subplots()`, then `st.pyplot(fig)`.
-        - Assume 'df' is available in the environment.
+        - Assume 'df' is available.
         
         ### RESPONSE SCHEMA (JSON ONLY):
         {
-          "answer": "Professional analysis and findings",
+          "answer": "Strictly technical & concise (max 50 words)",
           "insight_type": "analysis | chart | query | summary | error",
           "python_code": "The full pandas/plotly code to execute",
-          "suggestions": ["next step 1", "next step 2"],
+          "suggestions": ["step 1", "step 2"],
           "confidence": "high | medium | low"
         }
         """
 
     def get_dataset_summary(self, df: Optional[pd.DataFrame]) -> Dict[str, Any]:
-        """Generates a technical meta-summary of the dataset for the AI context."""
+        """Generates a compressed Semantic Schema to minimize token usage."""
         if df is None: return {"status": "No dataset loaded."}
-        return {
-            "shape": df.shape,
-            "columns": list(df.columns),
-            "dtypes": df.dtypes.astype(str).to_dict(),
-            "nulls": df.isnull().sum().to_dict(),
-            "head": df.head(3).to_dict()
+        
+        schema = {
+            "rows": df.shape[0],
+            "cols": df.shape[1],
+            "fields": []
         }
+        
+        for col in df.columns:
+            col_info = {
+                "name": col,
+                "type": str(df[col].dtype),
+                "nulls": int(df[col].isnull().sum())
+            }
+            
+            # Add range for numeric
+            if pd.api.types.is_numeric_dtype(df[col]):
+                col_info["range"] = [float(df[col].min()), float(df[col].max())]
+            # Add unique samples for categorical
+            else:
+                uniques = df[col].unique()
+                col_info["unique_count"] = len(uniques)
+                col_info["samples"] = list(uniques[:3])
+            
+            schema["fields"].append(col_info)
+            
+        return schema
 
     def ask(self, query: str, df: Optional[pd.DataFrame], history: List[Dict[str, str]]) -> Dict[str, Any]:
-        """Processes a user query using the available AI engines."""
-        # Build Knowledge Base Context
+        """Processes a user query using the available AI engines with optimized context."""
+        # Build Semantic Knowledge Base Context (Aggressive Pruning)
         summary = self.get_dataset_summary(df)
-        knowledge_context = f"DATASET_KNOWLEDGE_BASE: {json.dumps(summary, default=str)}\n"
+        knowledge_context = f"SEMANTIC_SCHEMA: {json.dumps(summary, default=str)}\n"
         
         prompt = f"{knowledge_context}\nCHAT_HISTORY: {json.dumps(history[-5:], default=str)}\nUSER_QUERY: {query}"
         
