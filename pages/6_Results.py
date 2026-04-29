@@ -15,15 +15,11 @@ c1, c2, c3 = st.columns(3)
 with c1:
     df = st.session_state.get('df')
     if df is not None:
-        content = f"""
-        <div style="text-align:center;">
-            <h2 style="margin-bottom:0;">{st.session_state.get('file_name', 'N/A')}</h2>
-            <p style="color:#00C9A7; font-weight:600;">{df.shape[0]:,} Rows × {df.shape[1]} Columns</p>
-        </div>
-        """
-        glass_card(content, title="Active Dataset", subtitle="Data Source Connectivity")
+        with glass_card(title="Active Dataset", subtitle="Data Source Connectivity"):
+            st.markdown(content, unsafe_allow_html=True)
     else:
-        glass_card('<div style="text-align:center; padding:1rem; opacity:0.5;">No active data universe found.</div>', title="Dataset", subtitle="Disconnected")
+        with glass_card(title="Dataset", subtitle="Disconnected"):
+            st.markdown('<div style="text-align:center; padding:1rem; opacity:0.5;">No active data universe found.</div>', unsafe_allow_html=True)
 
 with c2:
     results = st.session_state.get('ml_results', [])
@@ -31,25 +27,16 @@ with c2:
         task = st.session_state.get('ml_task', 'Classification')
         metric_key = "Accuracy" if task == "Classification" else "R² Score"
         best = max(results, key=lambda r: r.get(metric_key, 0))
-        content = f"""
-        <div style="text-align:center;">
-            <h2 style="margin-bottom:0; color:#6C63FF;">{best['Model']}</h2>
-            <p style="font-weight:600;">{metric_key}: {best.get(metric_key, 'N/A')}</p>
-        </div>
-        """
-        glass_card(content, title="Top Performer", subtitle="Best Trained Model")
+        with glass_card(title="Top Performer", subtitle="Best Trained Model"):
+            st.markdown(content, unsafe_allow_html=True)
     else:
-        glass_card('<div style="text-align:center; padding:1rem; opacity:0.5;">Forge a model to see performance.</div>', title="Model Performance", subtitle="Inactive")
+        with glass_card(title="Model Performance", subtitle="Inactive"):
+            st.markdown('<div style="text-align:center; padding:1rem; opacity:0.5;">Forge a model to see performance.</div>', unsafe_allow_html=True)
 
 with c3:
     chat_count = len(st.session_state.get('messages', []))
-    content = f"""
-    <div style="text-align:center;">
-        <h2 style="margin-bottom:0;">{chat_count}</h2>
-        <p style="font-weight:600;">Interactions Logged</p>
-    </div>
-    """
-    glass_card(content, title="AI Intelligence", subtitle="Nexus Chat Logs")
+    with glass_card(title="AI Intelligence", subtitle="Nexus Chat Logs"):
+        st.markdown(content, unsafe_allow_html=True)
 
 st.write("---")
 

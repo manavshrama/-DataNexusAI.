@@ -9,7 +9,7 @@ import re
 from utils.theme import load_css, glass_card, render_hero
 from components.sidebar_ui import render_sidebar
 from services.vector_store import initialize_vector_store
-from utils.llm_utils import get_chat_response
+from modules.chatbot import ChatbotModule
 
 st.set_page_config(page_title="DataNexusAI - Chat", page_icon="💬", layout="wide", initial_sidebar_state="expanded")
 load_css()
@@ -59,29 +59,7 @@ if 'df' in st.session_state and st.session_state['df'] is not None:
     if _df.shape[1] > 20:
         data_snapshot += f"\n\n(Showing first 20 of {_df.shape[1]} columns)"
 
-# --- Execution Engine ---
-def execute_code_blocks(text):
-    """Parses and executes python code blocks found in the text."""
-    code_blocks = re.findall(r'```python\n(.*?)\n```', text, re.DOTALL)
-    for code in code_blocks:
-        with st.expander("🛠️ Executing Generated Code", expanded=False):
-            st.code(code, language='python')
-            try:
-                # Setup execution context
-                exec_globals = {
-                    'pd': pd,
-                    'np': np,
-                    'plt': plt,
-                    'sns': sns,
-                    'px': px,
-                    'st': st,
-                    'df': st.session_state['df'],
-                    'io': io
-                }
-                # Execute the code
-                exec(code, exec_globals)
-            except Exception as e:
-                st.error(f"Execution Error: {str(e)}")
+from services.execution_service import execute_code_blocks
 
 # --- Sidebar: Dataset Context & Quick Actions ---
 with st.sidebar:
@@ -134,7 +112,7 @@ with chat_container:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
             if message["role"] == "assistant":
-                execute_code_blocks(message["content"])
+                execute_code_blocks(message["content"], st.session_state.get('df'))
 
 # --- Chat Input ---
 if prompt := st.chat_input("Ask anything about your data, charts, or files..."):
@@ -143,12 +121,28 @@ if prompt := st.chat_input("Ask anything about your data, charts, or files..."):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        api_key = st.session_state['settings'].get('api_key')
-        with st.spinner("Processing request..."):
-            response = get_chat_response(st.session_state['messages'], api_key, dataset_summary, data_snapshot)
-            st.markdown(response)
-            execute_code_blocks(response)
-            st.session_state['messages'].append({"role": "assistant", "content": response})
+        bot = ChatbotModule(
+            groq_key=st.session_state.get('groq_key'),
+            gemini_key=st.session_state.get('gemini_key')
+        )
+        with st.spinner("Nexus AI is processing..."):
+            # Use the consolidated ask method
+            response_data = bot.ask(prompt, st.session_state.get('df'), st.session_state['messages'])
+            
+            # Extract content from JSON response
+            answer = response_data.get("answer", "No response generated.")
+            code = response_data.get("python_code", "")
+            
+            # Display text
+            st.markdown(answer)
+            
+            # Execute code if provided
+            if code:
+                execute_code_blocks(f"```python\n{code}\n```", st.session_state.get('df'))
+            
+            # Store message
+            full_response = f"{answer}\n\n```python\n{code}\n```" if code else answer
+            st.session_state['messages'].append({"role": "assistant", "content": full_response})
 
 # --- Chat Management ---
 col1, col2 = st.columns([1, 5])

@@ -1,122 +1,114 @@
 # --- CUSTOM CSS ---
 CUSTOM_CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;500;600&display=swap');
     
     html, body, [data-testid="stAppViewContainer"] {
-        font-family: 'Inter', sans-serif !important;
-        background-color: #0b1c30 !important;
-        color: #f8f9ff !important;
+        font-family: 'Outfit', sans-serif !important;
+        background-color: #050505 !important;
+        color: #E0E0E0 !important;
     }
     
-    /* Stitch Headers */
+    /* Headers with Syne */
     h1, h2, h3, [data-testid="stHeader"] {
-        font-family: 'Manrope', sans-serif !important;
-        font-weight: 700 !important;
-        color: #f8f9ff !important;
-        letter-spacing: -0.02em !important;
+        font-family: 'Syne', sans-serif !important;
+        font-weight: 800 !important;
+        color: #FFFFFF !important;
+        letter-spacing: -0.04em !important;
+        text-transform: uppercase;
     }
     
-    /* Sidebar Styling */
+    /* Sidebar Styling - Deep Obsidian */
     [data-testid="stSidebar"] {
-        background-color: #071321 !important;
-        border-right: 1px solid rgba(115, 118, 135, 0.1) !important;
+        background-color: #0A0A0A !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
     
-    /* Surface Cards (Stitch Tonal Layering) */
-    div[data-testid="stMetric"], .stChatMessage, div[data-testid="stExpander"] {
-        background-color: #11253e !important;
-        border: 1px solid rgba(115, 118, 135, 0.15) !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+    /* Premium Glass Cards */
+    .stMetric, .stChatMessage, .stExpander, div.glass-card {
+        background: rgba(20, 20, 20, 0.6) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        transition: transform 0.3s ease, border-color 0.3s ease;
     }
     
-    /* Stitch Primary Button */
+    .stMetric:hover, .stExpander:hover {
+        border-color: rgba(0, 210, 255, 0.3) !important;
+        transform: translateY(-2px);
+    }
+    
+    /* Cyber Gradient Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #0049db 0%, #2962ff 100%) !important;
+        background: linear-gradient(135deg, #9D50BB 0%, #6E48AA 100%) !important;
         color: white !important;
         border: none !important;
-        border-radius: 8px !important;
-        padding: 0.6rem 1.8rem !important;
-        font-weight: 600 !important;
-        font-family: 'Manrope', sans-serif !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        box-shadow: 0 4px 14px rgba(0, 73, 219, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 0.8rem 2rem !important;
+        font-weight: 700 !important;
+        font-family: 'Syne', sans-serif !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 4px 15px rgba(157, 80, 187, 0.4) !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
     .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(0, 73, 219, 0.4) !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 8px 25px rgba(157, 80, 187, 0.6) !important;
+        background: linear-gradient(135deg, #00D2FF 0%, #3a7bd5 100%) !important;
     }
     
-    /* Tabs Styling */
+    /* Tabs - Minimalist & Sharp */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px !important;
+        gap: 12px !important;
         background-color: transparent !important;
+        padding: 10px 0 !important;
     }
     .stTabs [data-baseweb="tab"] {
-        height: 40px !important;
-        white-space: pre !important;
-        background-color: rgba(115, 118, 135, 0.05) !important;
-        border-radius: 8px 8px 0 0 !important;
-        color: rgba(248, 249, 255, 0.5) !important;
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        border-radius: 10px !important;
+        color: rgba(255, 255, 255, 0.4) !important;
         font-weight: 600 !important;
-        border: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        transition: all 0.3s ease;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #0049db !important;
-        color: white !important;
+        background-color: rgba(0, 210, 255, 0.1) !important;
+        color: #00D2FF !important;
+        border-color: #00D2FF !important;
     }
 
-    /* Glass Effects */
-    .glass-card {
-        background: rgba(11, 28, 48, 0.4) !important;
-        backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        border-radius: 16px !important;
-        padding: 24px !important;
-    }
-
-    /* Premium Chat Bubbles */
+    /* Chat Bubbles - Floating Glass */
     .user-bubble {
-        background-color: rgba(0, 73, 219, 0.08) !important;
-        color: #f8f9ff !important;
-        padding: 12px 18px !important;
-        border-radius: 12px 12px 0 12px !important;
-        margin: 10px 0 !important;
+        background: rgba(0, 210, 255, 0.1) !important;
+        border: 1px solid rgba(0, 210, 255, 0.2) !important;
+        border-radius: 20px 20px 0 20px !important;
+        padding: 15px 20px !important;
+        margin: 15px 0 !important;
         float: right;
         clear: both;
-        max-width: 85%;
-        border: 1px solid rgba(0, 73, 219, 0.2) !important;
-        font-size: 14px !important;
+        max-width: 80%;
     }
     .ai-bubble {
-        background-color: rgba(255, 255, 255, 0.03) !important;
-        color: #f8f9ff !important;
-        padding: 12px 18px !important;
-        border-radius: 12px 12px 12px 0 !important;
-        margin: 10px 0 !important;
+        background: rgba(157, 80, 187, 0.1) !important;
+        border: 1px solid rgba(157, 80, 187, 0.2) !important;
+        border-radius: 20px 20px 20px 0 !important;
+        padding: 15px 20px !important;
+        margin: 15px 0 !important;
         float: left;
         clear: both;
-        max-width: 85%;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        font-size: 14px !important;
-        position: relative !important;
+        max-width: 80%;
     }
-    .sparkle-icon {
-        color: #2962ff !important;
-        margin-right: 8px !important;
-    }
-    
-    /* Metadata Labels */
-    .meta-label {
-        font-family: 'Manrope', sans-serif !important;
-        font-size: 10px !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.1em !important;
-        color: rgba(248, 249, 255, 0.4) !important;
-        font-weight: 700 !important;
-        margin-bottom: 4px !important;
+
+    /* Gradient Text Utility */
+    .gradient-text {
+        background: linear-gradient(90deg, #00D2FF, #9D50BB);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
     }
 </style>
 """

@@ -161,6 +161,25 @@ class VisualizationModule:
                 if len(num_cols) >= 4:
                     fig = go.Figure(data=[go.Candlestick(x=df[x], open=df[num_cols[0]], high=df[num_cols[1]], low=df[num_cols[2]], close=df[num_cols[3]])])
             
+            # --- COMPARISON EXTENSIONS ---
+            elif chart_type == "Lollipop Chart":
+                fig = px.scatter(plot_df, x=x, y=y, color=color, template="plotly_dark")
+                fig.update_traces(marker=dict(size=12))
+                for i, row in plot_df.iterrows():
+                    fig.add_shape(type='line', x0=row[x], y0=0, x1=row[x], y1=row[y], line=dict(color='gray', width=1))
+            
+            elif chart_type == "Dumbbell Plot":
+                # Assumes y and size or another column for start/end
+                fig = px.scatter(plot_df, x=x, y=y, color=color, template="plotly_dark")
+                # Simplified dumbbell logic
+            
+            elif chart_type == "Bullet Chart":
+                fig = go.Figure(go.Indicator(
+                    mode = "number+gauge+delta", value = plot_df[y].mean() if y else 0,
+                    domain = {'x': [0, 1], 'y': [0, 1]},
+                    gauge = {'shape': "bullet"}
+                ))
+
             # --- FALLBACK ---
             else:
                 # Basic fallback for unimplemented types to avoid errors

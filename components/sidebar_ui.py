@@ -6,12 +6,12 @@ def render_sidebar():
     """Render the sidebar with logo, API configuration, file info, and logout."""
     with st.sidebar:
         # Logo and Branding
-        st.image("https://img.icons8.com/nolan/128/artificial-intelligence.png", width=60)
-        st.markdown('<h2 class="gradient-text">DataNexus AI</h2>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; padding-bottom: 20px;">', unsafe_allow_html=True)
+        st.image("https://img.icons8.com/nolan/128/artificial-intelligence.png", width=100)
+        st.markdown('<h1 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 0;">NEXUS AI</h1>', unsafe_allow_html=True)
+        st.markdown('<p style="font-size: 0.7rem; color: #00D2FF; letter-spacing: 0.3em; margin-top: -5px; font-weight: 700;">COMMAND CENTER</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('---')
-        
-        # Sidebar Status (To prove it's working)
-        st.success("Nexus System Online")
         
         # API Configuration
         st.subheader("🔑 API Configuration")

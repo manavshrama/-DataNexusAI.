@@ -34,7 +34,7 @@ def init_session_state():
         "df_cleaned": None,
         "df_original": None,
         "file_name": None,
-        "chat_history": [],
+        "messages": [],
         "groq_key": default_groq,
         "gemini_key": default_gemini,
         "eda_done": False,

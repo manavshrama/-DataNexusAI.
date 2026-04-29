@@ -1,49 +1,34 @@
 import streamlit as st
 
 def load_css():
-    """Injects minimal custom CSS to ensure visibility."""
-    st.markdown("""
-    <style>
-    /* Ensure Sidebar and Main Menu are visible */
-    section[data-testid="stSidebar"] {
-        visibility: visible !important;
-        display: block !important;
-    }
-    #MainMenu {
-        visibility: visible !important;
-    }
-    header {
-        visibility: visible !important;
-    }
-    
-    /* Basic Glassmorphism for the cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 20px;
-        backdrop-filter: blur(10px);
-    }
-    
-    .gradient-text {
-        background: linear-gradient(45deg, #7B5EA7, #00C9A7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: bold;
-    }
-    </style>
+    """Injects the comprehensive NexusNoir CSS from constants."""
+    from utils.constants import CUSTOM_CSS
+    st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
+def render_hero(title, subtitle, icon="🔮"):
+    """Renders a cinematic Hero section with neon gradients."""
+    st.markdown(f"""
+    <div style="padding: 2rem 0; text-align: left;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+            <span style="font-size: 40px;">{icon}</span>
+            <h1 class="gradient-text" style="font-size: 3.5rem; margin: 0; line-height: 1;">{title}</h1>
+        </div>
+        <p style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; color: rgba(255,255,255,0.6); font-weight: 300; margin-left: 55px;">
+            {subtitle}
+        </p>
+    </div>
+    <hr style="border: 0; height: 1px; background: linear-gradient(90deg, rgba(0,210,255,0.5), transparent); margin-bottom: 2rem;">
     """, unsafe_allow_html=True)
 
-def render_hero(title, subtitle, cta_label=None):
-    """Renders a simple Hero section."""
-    st.markdown(f"## {title}")
-    st.markdown(f"*{subtitle}*")
-    st.markdown("---")
-
-def glass_card(content, title=None, subtitle=None):
-    """Simple glass card wrapper."""
-    with st.container():
-        if title: st.subheader(title)
-        if subtitle: st.caption(subtitle)
-        st.write(content)
+def glass_card(title=None, subtitle=None):
+    """Context manager for glass cards."""
+    header_html = ""
+    if title:
+        header_html += f'<h3 style="margin-top: 0; margin-bottom: 5px;">{title}</h3>'
+    if subtitle:
+        header_html += f'<p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 20px;">{subtitle}</p>'
+    
+    if header_html:
+        st.markdown(header_html, unsafe_allow_html=True)
+    
+    return st.container(border=True)

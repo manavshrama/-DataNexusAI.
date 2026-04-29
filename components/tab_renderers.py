@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def render_upload_tab(doc_collection, embedder):
-    render_hero("Data Nexus", "Upload your dataset and let the engine take over")
+    render_hero("Nexus Core", "Upload your dataset and let the engine take over", icon="🛰️")
     uploaded_file = st.file_uploader(
         "Choose a CSV or Excel file", type=["csv", "xlsx", "xls"]
     )
@@ -65,30 +65,26 @@ def render_upload_tab(doc_collection, embedder):
 
     if st.session_state.df is not None:
         stats = DataLoader.get_stats(st.session_state.df)
-        st.markdown(
-            '<div class="meta-label">Dataset Vitals</div>', unsafe_allow_html=True
-        )
+        st.markdown('<div class="meta-label">NEXUS TELEMETRY</div>', unsafe_allow_html=True)
         c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(
-                f'<div class="glass-card"><h4>Rows</h4><h2>{stats["rows"]:,}</h2></div>',
-                unsafe_allow_html=True,
-            )
-        with c2:
-            st.markdown(
-                f'<div class="glass-card"><h4>Cols</h4><h2>{stats["cols"]:,}</h2></div>',
-                unsafe_allow_html=True,
-            )
-        with c3:
-            st.markdown(
-                f'<div class="glass-card"><h4>Nulls</h4><h2>{stats["null_pct"]:.1f}%</h2></div>',
-                unsafe_allow_html=True,
-            )
-        with c4:
-            st.markdown(
-                f'<div class="glass-card"><h4>Duplicates</h4><h2>{stats["duplicates"]:,}</h2></div>',
-                unsafe_allow_html=True,
-            )
+        
+        metrics = [
+            ("ROWS", f"{stats['rows']:,}", "📊"),
+            ("COLUMNS", f"{stats['cols']:,}", "📐"),
+            ("DATA VOID", f"{stats['null_pct']:.1f}%", "🕳️"),
+            ("CLONES", f"{stats['duplicates']:,}", "👥")
+        ]
+        
+        for i, (label, val, icon) in enumerate(metrics):
+            cols = [c1, c2, c3, c4]
+            with cols[i]:
+                st.markdown(f"""
+                <div class="glass-card" style="text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 5px;">{icon}</div>
+                    <div class="meta-label" style="font-size: 0.6rem;">{label}</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; font-family: 'Syne', sans-serif; color: #00D2FF;">{val}</div>
+                </div>
+                """, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
         st.subheader("Data Preview")
@@ -117,7 +113,7 @@ def render_upload_tab(doc_collection, embedder):
 def render_eda_tab():
     if st.session_state.df is not None:
         eda = EDAModule()
-        render_hero("Insight Engine", "Explore distributions, correlations, and data quality at a glance")
+        render_hero("Insight Engine", "Explore distributions, correlations, and data quality at a glance", icon="📡")
 
         with st.expander("Statistical Summary", expanded=True):
             summary = eda.statistical_summary(st.session_state.df)
@@ -150,69 +146,64 @@ def render_eda_tab():
 
 def render_viz_tab():
     if st.session_state.df is not None:
-        render_hero("Visual Studio", "Navigate through high-precision galactic visualizations and multidimensional data structures.")
+        render_hero("Visual Studio", "Navigate through high-precision galactic visualizations and multidimensional structures.", icon="🌌")
         viz = VisualizationModule()
 
-        col1, col2 = st.columns([1, 3])
+        # Categorized Visualization Engine
+        viz_categories = {
+            "📊 Distribution": ["Histogram", "KDE Plot", "Box Plot", "Violin Plot", "Strip Plot", "Swarm Plot", "ECDF Plot", "Rug Plot", "Ridge Plot", "Q-Q Plot"],
+            "📈 Comparison": ["Bar Chart", "Horizontal Bar", "Grouped Bar", "Stacked Bar", "Lollipop Chart", "Dot Plot", "Dumbbell Plot", "Bullet Chart"],
+            "🔗 Relationship": ["Scatter Plot", "Bubble Chart", "3D Scatter Plot", "Scatter Matrix (Pair Plot)", "Heatmap (Correlation)", "Density Heatmap", "Density Contour", "Joint Plot", "Hexbin Plot"],
+            "🍕 Composition": ["Pie Chart", "Donut Chart", "Sunburst", "Treemap", "Waterfall Chart", "Waffle Chart", "Stacked Area"],
+            "⌛ Time Series": ["Line Chart", "Area Chart", "Candlestick (Time Series)", "OHLC Chart", "Step Chart"],
+            "🌊 Flow & Map": ["Sankey Diagram", "Funnel Chart", "Funnel Area", "Parallel Coordinates", "Parallel Categories", "Radar / Spider Chart", "Choropleth Map", "Scatter Mapbox", "Scatter Geo"]
+        }
+
+        col1, col2 = st.columns([1, 2.5])
+        
         with col1:
-            chart_type = st.selectbox(
-                "Select Chart Type",
-                [
-                    "Bar Chart", "Horizontal Bar", "Grouped Bar", "Stacked Bar",
-                    "Line Chart", "Step Chart", "Area Chart", "Stacked Area",
-                    "Scatter Plot", "Bubble Chart", "3D Scatter Plot", "Scatter Matrix (Pair Plot)",
-                    "Box Plot", "Violin Plot", "Strip Plot", "Histogram",
-                    "Pie Chart", "Donut Chart", "Sunburst", "Treemap",
-                    "Heatmap (Correlation)", "Density Heatmap", "Density Contour",
-                    "Sankey Diagram", "Funnel Chart", "Funnel Area",
-                    "Waterfall Chart", "Parallel Coordinates", "Parallel Categories",
-                    "Radar / Spider Chart", "Polar Scatter", "Polar Line",
-                    "Choropleth Map", "Scatter Mapbox", "Scatter Geo",
-                    "ECDF Plot", "Ternary Scatter", "Ternary Line",
-                    "Candlestick (Time Series)", "OHLC Chart",
-                    "Bullet Chart", "Lollipop Chart", "Dumbbell Plot",
-                    "Waffle Chart", "Hexbin Plot", "Joint Plot",
-                    "Ridge Plot", "Q-Q Plot", "Andrews Curves"
-                ],
-            )
-
+            st.markdown("### 🛠️ Configuration")
+            category = st.radio("Galaxy Category", list(viz_categories.keys()))
+            chart_type = st.selectbox("Select Target Visualization", viz_categories[category])
+            
+            st.markdown("---")
             all_cols = st.session_state.df.columns.tolist()
-            x_ax = st.selectbox("X Axis", all_cols)
-            y_ax = st.selectbox("Y Axis (if applicable)", [None] + all_cols)
-            color_ax = st.selectbox("Color/Group By", [None] + all_cols)
-
-            agg = st.selectbox(
-                "Aggregation",
-                [None, "Sum", "Mean", "Count", "Max", "Min", "OLS Trendline"],
-            )
-            scale = st.selectbox("Color Scale", viz.get_color_scales())
+            x_ax = st.selectbox("X Axis (Primary)", all_cols)
+            y_ax = st.selectbox("Y Axis (Secondary)", [None] + all_cols)
+            color_ax = st.selectbox("Color Mapping", [None] + all_cols)
+            
+            with st.expander("Advanced Optics"):
+                agg = st.selectbox("Aggregation Engine", [None, "Sum", "Mean", "Count", "Max", "Min", "OLS Trendline"])
+                scale = st.selectbox("Chromatic Scale", viz.get_color_scales())
 
         with col2:
-            fig = viz.plot(
-                chart_type,
-                st.session_state.df,
-                x=x_ax,
-                y=y_ax,
-                color=color_ax,
-                aggregation=agg,
-                color_scale=scale,
-            )
-            if fig:
-                st.plotly_chart(fig, use_container_width=True)
-                if st.checkbox("Show chart data table"):
-                    st.dataframe(
-                        st.session_state.df[[x_ax] + ([y_ax] if y_ax else [])].head(50)
-                    )
-            else:
-                st.error("Could not generate chart. Check column types.")
+            with st.container(border=True):
+                fig = viz.plot(
+                    chart_type,
+                    st.session_state.df,
+                    x=x_ax,
+                    y=y_ax,
+                    color=color_ax,
+                    aggregation=agg,
+                    color_scale=scale,
+                )
+                if fig:
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Action Bar
+                    ac1, ac2 = st.columns(2)
+                    if ac1.checkbox("🔬 Show Raw Extraction", value=False):
+                        st.dataframe(st.session_state.df[[x_ax] + ([y_ax] if y_ax else [])].head(50), use_container_width=True)
+                else:
+                    st.error("Engine Refusal: Incompatible column types for this visualization.")
     else:
-        st.warning("Please upload a file first.")
+        st.warning("Nexus System: Please upload a data source to initialize the Visual Studio.")
 
 
 def render_ml_tab():
     if st.session_state.df is not None:
         ml = MLModule()
-        render_hero("ML Studio", "Configure, train, and monitor your model in one workflow")
+        render_hero("ML Studio", "Configure, train, and monitor your model in one workflow", icon="🧠")
 
         task_type = st.radio(
             "Select ML Task",
@@ -284,141 +275,71 @@ def render_ml_tab():
 
 def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
     if st.session_state.df is not None:
-        render_hero("Neural Chat", "Ask anything about your data. Get code, charts, and insights instantly.")
+        render_hero("Neural Chat", "Ask anything about your data. Get code, charts, and insights instantly.", icon="💬")
         bot = ChatbotModule(
-            groq_key=st.session_state.groq_key, gemini_key=st.session_state.gemini_key
+            groq_key=st.session_state.get('groq_key'),
+            gemini_key=st.session_state.get('gemini_key')
         )
-
-        # Quick prompts
-        quick = [
-            "Summarize this data",
-            "Which column has most nulls?",
-            "Show top correlations",
-            "Suggest ML models",
-        ]
-        cp = st.columns(4)
-        for i, p in enumerate(quick):
-            if cp[i].button(p, use_container_width=True):
-                st.session_state.chat_input = p
+        
+        # Action Bar
+        col_m1, col_m2 = st.columns([4, 1])
+        with col_m2:
+            if st.button("🗑️ Clear", use_container_width=True):
+                st.session_state.messages = []
+                st.rerun()
 
         # Chat container
-        chat_container = st.container(height=500)
-        for msg in st.session_state.chat_history:
-            role = "user" if msg["role"] == "user" else "assistant"
-            with chat_container:
-                if role == "assistant":
-                    st.markdown(
-                        f'<div class="{role}-bubble"><span class="sparkle-icon">✨</span>{msg["content"]}</div>',
-                        unsafe_allow_html=True,
-                    )
-                else:
-                    st.markdown(
-                        f'<div class="{role}-bubble">{msg["content"]}</div>',
-                        unsafe_allow_html=True,
-                    )
+        chat_container = st.container(height=550)
+        with chat_container:
+            for msg in st.session_state.messages:
+                role = "user" if msg["role"] == "user" else "assistant"
+                with st.chat_message(role):
+                    st.markdown(msg["content"])
+                    if role == "assistant" and "```python" in msg["content"]:
+                        from services.execution_service import execute_code_blocks
+                        execute_code_blocks(msg["content"], st.session_state.df)
 
-        if prompt := st.chat_input("Ask about your data..."):
-            st.session_state.chat_history.append({"role": "user", "content": prompt})
-            with chat_container:
-                st.markdown(
-                    f'<div class="user-bubble">{prompt}</div>', unsafe_allow_html=True
-                )
+        if prompt := st.chat_input("Query the Nexus..."):
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
 
-            with st.spinner("AI is thinking..."):
-                doc_context = ""
-                chat_context = ""
-
-                if chroma_client and embedder:
-                    try:
-                        q_emb = embedder.encode(prompt).tolist()
-                        if doc_collection:
-                            docs_res = doc_collection.query(
-                                query_embeddings=[q_emb], n_results=5
-                            )
-                            if (
-                                docs_res
-                                and "documents" in docs_res
-                                and docs_res["documents"]
-                                and len(docs_res["documents"][0]) > 0
-                            ):
-                                doc_context = (
-                                    "\nDataset Content Snippets:\n"
-                                    + "\n".join(docs_res["documents"][0])
-                                )
-
-                        if chat_collection:
-                            chat_res = chat_collection.query(
-                                query_embeddings=[q_emb], n_results=3
-                            )
-                            if (
-                                chat_res
-                                and "documents" in chat_res
-                                and chat_res["documents"]
-                                and len(chat_res["documents"][0]) > 0
-                            ):
-                                chat_context = (
-                                    "\nPast Relevant Conversational Context:\n"
-                                    + "\n".join(chat_res["documents"][0])
-                                )
-                    except Exception as e:
-                        logger.warning("Failed to query vector store: %s", e)
-
-                enhanced_prompt = (
-                    f"{chat_context}\n{doc_context}\nUser Instruction: {prompt}"
-                    if doc_context or chat_context
-                    else prompt
-                )
-                response = bot.ask(
-                    enhanced_prompt, st.session_state.df, st.session_state.chat_history
-                )
-                reply = response.get("answer", "Error")
-                st.session_state.chat_history.append(
-                    {"role": "assistant", "content": reply}
-                )
-
-                if chat_collection and embedder:
-                    try:
-                        for role, content in [("user", prompt), ("assistant", reply)]:
-                            vector = embedder.encode(content).tolist()
+            with st.chat_message("assistant"):
+                with st.spinner("AI is thinking..."):
+                    # Use the consolidated ask method
+                    response_data = bot.ask(prompt, st.session_state.df, st.session_state.messages)
+                    
+                    answer = response_data.get("answer", "Error in processing.")
+                    code = response_data.get("python_code", "")
+                    
+                    st.markdown(answer)
+                    if code:
+                        from services.execution_service import execute_code_blocks
+                        execute_code_blocks(f"```python\n{code}\n```", st.session_state.df)
+                    
+                    full_reply = f"{answer}\n\n```python\n{code}\n```" if code else answer
+                    st.session_state.messages.append({"role": "assistant", "content": full_reply})
+                    
+                    # Embedding logic for knowledge base
+                    if chat_collection and embedder:
+                        try:
+                            import time, uuid
+                            vector = embedder.encode(prompt).tolist()
                             chat_collection.add(
                                 embeddings=[vector],
-                                documents=[content],
-                                metadatas=[
-                                    {
-                                        "role": role,
-                                        "timestamp": time.time(),
-                                        "session_id": st.session_state.session_id,
-                                    }
-                                ],
-                                ids=[f"chat_{uuid.uuid4().hex}"],
+                                documents=[prompt],
+                                metadatas=[{"role": "user", "timestamp": time.time(), "session_id": st.session_state.session_id}],
+                                ids=[f"chat_{uuid.uuid4().hex}"]
                             )
-                    except Exception as e:
-                        logger.warning("Failed to store chat embedding: %s", e)
-
-                with chat_container:
-                    st.markdown(
-                        f'<div class="ai-bubble"><span class="sparkle-icon">✨</span>{reply}</div>',
-                        unsafe_allow_html=True,
-                    )
-                    if "chart" in response and response["chart"]:
-                        c = response["chart"]
-                        viz = VisualizationModule()
-                        fig = viz.plot(
-                            c.get("type", "Bar Chart"),
-                            st.session_state.df,
-                            x=c.get("x"),
-                            y=c.get("y"),
-                            aggregation=c.get("agg"),
-                        )
-                        if fig:
-                            st.plotly_chart(fig, use_container_width=True)
+                        except Exception as e:
+                            logger.warning("Failed to store chat embedding: %s", e)
     else:
-        st.warning("Please upload a file first.")
+        st.warning("Nexus System: Please upload a data source to initialize the Neural Chat.")
 
 
 def render_export_tab():
     if st.session_state.df is not None:
-        render_hero("Export Vault", "Download your cleaned data and generated assets")
+        render_hero("Export Vault", "Download your cleaned data and generated assets", icon="🔒")
         exp = ExporterModule()
         fname = st.text_input(
             "Filename",
