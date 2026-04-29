@@ -121,28 +121,63 @@ if prompt := st.chat_input("Ask anything about your data, charts, or files..."):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
+        # --- Initialize Services ---
         bot = ChatbotModule(
             groq_key=st.session_state.get('groq_key'),
             gemini_key=st.session_state.get('gemini_key')
         )
-        with st.spinner("Nexus AI is processing..."):
-            # Use the consolidated ask method
-            response_data = bot.ask(prompt, st.session_state.get('df'), st.session_state['messages'])
-            
-            # Extract content from JSON response
-            answer = response_data.get("answer", "No response generated.")
-            code = response_data.get("python_code", "")
-            
-            # Display text
-            st.markdown(answer)
-            
-            # Execute code if provided
-            if code:
-                execute_code_blocks(f"```python\n{code}\n```", st.session_state.get('df'))
-            
-            # Store message
-            full_response = f"{answer}\n\n```python\n{code}\n```" if code else answer
-            st.session_state['messages'].append({"role": "assistant", "content": full_response})
+        embedder, chroma_client, chat_collection, doc_collection = initialize_vector_store()
+
+        with st.spinner("Neural Cache Lookup..."):
+            # --- SEMANTIC CACHE LAYER ---
+            cached_answer = None
+            if chat_collection and embedder:
+                try:
+                    q_vector = embedder.encode(prompt).tolist()
+                    cache_res = chat_collection.query(
+                        query_embeddings=[q_vector], 
+                        n_results=1,
+                        where={"role": "assistant"}
+                    )
+                    if cache_res and cache_res['distances'] and cache_res['distances'][0]:
+                        if cache_res['distances'][0][0] < 0.1: 
+                            cached_answer = cache_res['documents'][0][0]
+                            st.caption("🚀 Retrieved from Zero-Token Neural Cache")
+                except Exception as e:
+                    pass
+
+        if cached_answer:
+            st.markdown(cached_answer)
+            st.session_state['messages'].append({"role": "assistant", "content": cached_answer})
+            execute_code_blocks(cached_answer, st.session_state.get('df'))
+        else:
+            with st.spinner("Nexus AI is processing..."):
+                # Use the consolidated ask method
+                response_data = bot.ask(prompt, st.session_state.get('df'), st.session_state['messages'])
+                
+                answer = response_data.get("answer", "No response generated.")
+                code = response_data.get("python_code", "")
+                
+                st.markdown(answer)
+                if code:
+                    execute_code_blocks(f"```python\n{code}\n```", st.session_state.get('df'))
+                
+                full_response = f"{answer}\n\n```python\n{code}\n```" if code else answer
+                st.session_state['messages'].append({"role": "assistant", "content": full_response})
+                
+                # Store in Neural Cache
+                if chat_collection and embedder:
+                    try:
+                        import time, uuid
+                        vector = embedder.encode(full_response).tolist()
+                        chat_collection.add(
+                            embeddings=[vector],
+                            documents=[full_response],
+                            metadatas=[{"role": "assistant", "timestamp": time.time(), "session_id": st.session_state.get('session_id', 'default')}],
+                            ids=[f"cache_{uuid.uuid4().hex}"]
+                        )
+                    except Exception:
+                        pass
 
 # --- Chat Management ---
 col1, col2 = st.columns([1, 5])

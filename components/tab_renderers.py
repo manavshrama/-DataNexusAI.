@@ -330,34 +330,61 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                 st.markdown(prompt)
 
             with st.chat_message("assistant"):
-                with st.spinner("AI is thinking..."):
-                    # Use the consolidated ask method
-                    response_data = bot.ask(prompt, st.session_state.df, st.session_state.messages)
-                    
-                    answer = response_data.get("answer", "Error in processing.")
-                    code = response_data.get("python_code", "")
-                    
-                    st.markdown(answer)
-                    if code:
-                        from services.execution_service import execute_code_blocks
-                        execute_code_blocks(f"```python\n{code}\n```", st.session_state.df)
-                    
-                    full_reply = f"{answer}\n\n```python\n{code}\n```" if code else answer
-                    st.session_state.messages.append({"role": "assistant", "content": full_reply})
-                    
-                    # Embedding logic for knowledge base
+                with st.spinner("Neural Cache Lookup..."):
+                    # --- SEMANTIC CACHE LAYER ---
+                    cached_answer = None
                     if chat_collection and embedder:
                         try:
-                            import time, uuid
-                            vector = embedder.encode(prompt).tolist()
-                            chat_collection.add(
-                                embeddings=[vector],
-                                documents=[prompt],
-                                metadatas=[{"role": "user", "timestamp": time.time(), "session_id": st.session_state.session_id}],
-                                ids=[f"chat_{uuid.uuid4().hex}"]
+                            q_vector = embedder.encode(prompt).tolist()
+                            cache_res = chat_collection.query(
+                                query_embeddings=[q_vector], 
+                                n_results=1,
+                                where={"role": "assistant"} # Only pull AI answers
                             )
+                            if cache_res and cache_res['distances'] and cache_res['distances'][0]:
+                                distance = cache_res['distances'][0][0]
+                                # If distance is very low (high similarity), use cache
+                                if distance < 0.1: 
+                                    cached_answer = cache_res['documents'][0][0]
+                                    st.caption("🚀 Retrieved from Zero-Token Neural Cache")
                         except Exception as e:
-                            logger.warning("Failed to store chat embedding: %s", e)
+                            logger.warning(f"Cache lookup failed: {e}")
+
+                if cached_answer:
+                    st.markdown(cached_answer)
+                    st.session_state.messages.append({"role": "assistant", "content": cached_answer})
+                    # Re-execute code if present in cache
+                    from services.execution_service import execute_code_blocks
+                    execute_code_blocks(cached_answer, st.session_state.df)
+                else:
+                    with st.spinner("AI is thinking..."):
+                        # Use the consolidated ask method
+                        response_data = bot.ask(prompt, st.session_state.df, st.session_state.messages)
+                        
+                        answer = response_data.get("answer", "Error in processing.")
+                        code = response_data.get("python_code", "")
+                        
+                        st.markdown(answer)
+                        if code:
+                            from services.execution_service import execute_code_blocks
+                            execute_code_blocks(f"```python\n{code}\n```", st.session_state.df)
+                        
+                        full_reply = f"{answer}\n\n```python\n{code}\n```" if code else answer
+                        st.session_state.messages.append({"role": "assistant", "content": full_reply})
+                        
+                        # Store in Neural Cache
+                        if chat_collection and embedder:
+                            try:
+                                import time, uuid
+                                vector = embedder.encode(full_reply).tolist()
+                                chat_collection.add(
+                                    embeddings=[vector],
+                                    documents=[full_reply],
+                                    metadatas=[{"role": "assistant", "timestamp": time.time(), "session_id": st.session_state.session_id}],
+                                    ids=[f"cache_{uuid.uuid4().hex}"]
+                                )
+                            except Exception as e:
+                                logger.warning("Failed to store cache embedding: %s", e)
     else:
         st.warning("Nexus System: Please upload a data source to initialize the Neural Chat.")
 
