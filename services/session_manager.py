@@ -39,6 +39,8 @@ def init_session_state():
         "gemini_key": default_gemini,
         "eda_done": False,
         "ml_results": {},
+        "trained_models": {},
+        "ml_task": "Classification",
         "keep_alive_started": False,
         "session_id": str(uuid.uuid4())
     }
