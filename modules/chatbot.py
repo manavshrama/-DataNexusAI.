@@ -3,11 +3,12 @@ import pandas as pd
 import streamlit as st
 from groq import Groq
 import google.generativeai as genai
+from typing import Optional, List, Dict, Any
 
 class ChatbotModule:
     """AI Data Analyst Chatbot with Groq-to-Gemini fallback and structured JSON output."""
     
-    def __init__(self, groq_key=None, gemini_key=None):
+    def __init__(self, groq_key: Optional[str] = None, gemini_key: Optional[str] = None):
         self.groq_key = groq_key
         self.gemini_key = gemini_key
         # --- GRAFTED SYSTEM PROMPT (DataNexus Visual Engine v2) ---
@@ -43,8 +44,9 @@ class ChatbotModule:
         }
         """
 
-    def get_dataset_summary(self, df):
-        if df is None: return "No dataset."
+    def get_dataset_summary(self, df: Optional[pd.DataFrame]) -> Dict[str, Any]:
+        """Generates a technical meta-summary of the dataset for the AI context."""
+        if df is None: return {"status": "No dataset loaded."}
         return {
             "shape": df.shape,
             "columns": list(df.columns),
@@ -53,12 +55,13 @@ class ChatbotModule:
             "head": df.head(3).to_dict()
         }
 
-    def ask(self, query, df, history):
+    def ask(self, query: str, df: Optional[pd.DataFrame], history: List[Dict[str, str]]) -> Dict[str, Any]:
+        """Processes a user query using the available AI engines."""
         # Build Knowledge Base Context
         summary = self.get_dataset_summary(df)
-        knowledge_context = f"DATASET_KNOWLEDGE_BASE: {json.dumps(summary)}\n"
+        knowledge_context = f"DATASET_KNOWLEDGE_BASE: {json.dumps(summary, default=str)}\n"
         
-        prompt = f"{knowledge_context}\nCHAT_HISTORY: {json.dumps(history[-5:])}\nUSER_QUERY: {query}"
+        prompt = f"{knowledge_context}\nCHAT_HISTORY: {json.dumps(history[-5:], default=str)}\nUSER_QUERY: {query}"
         
         # Priority 1: Groq
         if self.groq_key:
@@ -73,6 +76,8 @@ class ChatbotModule:
                     response_format={"type": "json_object"}
                 )
                 return json.loads(response.choices[0].message.content)
+            except json.JSONDecodeError:
+                st.error("Error: Received malformed JSON from Groq Engine.")
             except Exception as e:
                 st.warning(f"Groq Engine Offline: {e}")
         
@@ -81,13 +86,17 @@ class ChatbotModule:
             try:
                 genai.configure(api_key=self.gemini_key)
                 model = genai.GenerativeModel('gemini-1.5-pro-latest')
-                # For Gemini, we merge system and user for best performance in JSON mode
                 res = model.generate_content(
                     f"{self.system_prompt}\n\n{prompt}",
                     generation_config={"response_mime_type": "application/json"}
                 )
                 return json.loads(res.text)
+            except json.JSONDecodeError:
+                st.error("Error: Received malformed JSON from Gemini Engine.")
             except Exception as e:
                 st.error(f"Gemini Engine Offline: {e}")
         
-        return {"answer": "Error: AI Engines are disconnected. Please verify API keys in the sidebar.", "insight_type": "error"}
+        return {
+            "answer": "Neural engines are currently disconnected. Please verify your API credentials in the sidebar.", 
+            "insight_type": "error"
+        }

@@ -17,7 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 def render_upload_tab(doc_collection, embedder):
-    render_hero("Nexus Core", "Upload your dataset and let the engine take over", icon="🛰️")
+    render_hero(
+        "Data Portal", 
+        "Upload your CSV or Excel files to begin the intelligence cycle.", 
+        icon="📥",
+        bg_image="assets/hero_upload.png"
+    )
     uploaded_file = st.file_uploader(
         "Choose a CSV or Excel file", type=["csv", "xlsx", "xls"]
     )
@@ -113,7 +118,12 @@ def render_upload_tab(doc_collection, embedder):
 def render_eda_tab():
     if st.session_state.df is not None:
         eda = EDAModule()
-        render_hero("Insight Engine", "Explore distributions, correlations, and data quality at a glance", icon="📡")
+        render_hero(
+            "Lens of Discovery", 
+            "Deep-dive statistical scanning and quality auditing.", 
+            icon="🔬",
+            bg_image="assets/hero_eda.png"
+        )
 
         with st.expander("Statistical Summary", expanded=True):
             summary = eda.statistical_summary(st.session_state.df)
@@ -146,7 +156,12 @@ def render_eda_tab():
 
 def render_viz_tab():
     if st.session_state.df is not None:
-        render_hero("Visual Studio", "Navigate through high-precision galactic visualizations and multidimensional structures.", icon="🌌")
+        render_hero(
+            "Visual Galaxy", 
+            "Transform raw dimensions into high-fidelity narratives.", 
+            icon="🎨",
+            bg_image="assets/hero_viz.png"
+        )
         viz = VisualizationModule()
 
         # Categorized Visualization Engine
@@ -203,7 +218,12 @@ def render_viz_tab():
 def render_ml_tab():
     if st.session_state.df is not None:
         ml = MLModule()
-        render_hero("ML Studio", "Configure, train, and monitor your model in one workflow", icon="🧠")
+        render_hero(
+            "ML Studio", 
+            "Configure, train, and monitor your model in one workflow", 
+            icon="🧠",
+            bg_image="assets/hero_ml.png"
+        )
 
         task_type = st.radio(
             "Select ML Task",
@@ -275,7 +295,12 @@ def render_ml_tab():
 
 def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
     if st.session_state.df is not None:
-        render_hero("Neural Chat", "Ask anything about your data. Get code, charts, and insights instantly.", icon="💬")
+        render_hero(
+            "Neural Chat", 
+            "Ask anything about your data. Get code, charts, and insights instantly.", 
+            icon="💬",
+            bg_image="assets/hero_chat.png"
+        )
         bot = ChatbotModule(
             groq_key=st.session_state.get('groq_key'),
             gemini_key=st.session_state.get('gemini_key')
@@ -339,7 +364,12 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
 
 def render_export_tab():
     if st.session_state.df is not None:
-        render_hero("Export Vault", "Download your cleaned data and generated assets", icon="🔒")
+        render_hero(
+            "Export Vault", 
+            "Download your cleaned data and generated assets", 
+            icon="🔒",
+            bg_image="assets/hero_export.png"
+        )
         exp = ExporterModule()
         fname = st.text_input(
             "Filename",
