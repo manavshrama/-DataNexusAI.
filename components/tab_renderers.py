@@ -6,6 +6,7 @@ import uuid
 import time
 import logging
 from modules.data_loader import DataLoader
+from utils.state_manager import add_audit_entry, add_vault_asset
 from modules.eda import EDAModule
 from modules.visualization import VisualizationModule
 from modules.ml_models import MLModule
@@ -36,6 +37,8 @@ def render_upload_tab(doc_collection, embedder):
                 st.session_state.df = df
                 st.session_state.df_original = df.copy()
                 st.session_state.file_name = uploaded_file.name
+                # Log upload action
+                add_audit_entry('upload', {'file_name': uploaded_file.name})
 
                 # Use Case B: Document RAG Chunking
                 if doc_collection and embedder:
@@ -96,23 +99,7 @@ def render_upload_tab(doc_collection, embedder):
         rows = st.slider("Preview Rows", 5, 100, 10)
         st.dataframe(st.session_state.df.head(rows), use_container_width=True)
 
-        st.subheader("Data Cleaning")
-        cc1, cc2, cc3 = st.columns(3)
-        if cc1.button("Drop Duplicates"):
-            st.session_state.df = DataLoader.clean_data(
-                st.session_state.df, "drop_duplicates"
-            )
-            st.success("Duplicates dropped!")
-        if cc2.button("Fill Nulls (Mean)"):
-            st.session_state.df = DataLoader.clean_data(
-                st.session_state.df, "fill_nulls_mean"
-            )
-            st.success("Numeric nulls filled!")
-        if cc3.button("Drop Any Nulls"):
-            st.session_state.df = DataLoader.clean_data(
-                st.session_state.df, "drop_any_nulls"
-            )
-            st.success("Rows with nulls removed!")
+
 
 
 def render_eda_tab():
@@ -150,6 +137,29 @@ def render_eda_tab():
                 st.warning("Needs numeric columns for correlation.")
 
         st.info("Full EDA Report runs all analytical modules on the current dataset.")
+
+        st.markdown("---")
+        st.subheader("Data Refinery (State Commit)")
+        st.write("Apply data transformations here. These changes are committed to the global working dataset used in visualization and ML.")
+        cc1, cc2, cc3 = st.columns(3)
+        if cc1.button("Drop Duplicates (Commit)"):
+            st.session_state.df = DataLoader.clean_data(
+                st.session_state.df, "drop_duplicates"
+            )
+            st.success("Committed: Duplicates dropped!")
+            add_audit_entry('clean_data', {'action': 'drop_duplicates'})
+        if cc2.button("Fill Nulls with Mean (Commit)"):
+            st.session_state.df = DataLoader.clean_data(
+                st.session_state.df, "fill_nulls_mean"
+            )
+            st.success("Committed: Numeric nulls filled!")
+            add_audit_entry('clean_data', {'action': 'fill_nulls_mean'})
+        if cc3.button("Drop Rows with Nulls (Commit)"):
+            st.session_state.df = DataLoader.clean_data(
+                st.session_state.df, "drop_any_nulls"
+            )
+            st.success("Committed: Rows with nulls removed!")
+            add_audit_entry('clean_data', {'action': 'drop_any_nulls'})
     else:
         st.warning("Please upload a file first.")
 
@@ -204,6 +214,8 @@ def render_viz_tab():
                 )
                 if fig:
                     st.plotly_chart(fig, use_container_width=True)
+                    # Save visualization to vault
+                    add_vault_asset('visualization', fig, {'chart_type': chart_type, 'x': x_ax, 'y': y_ax, 'color': color_ax})
                     
                     # Action Bar
                     ac1, ac2 = st.columns(2)
@@ -265,6 +277,10 @@ def render_ml_tab():
                                 "importance": importance,
                                 "type": "class",
                             }
+                            # Log model training
+                            add_audit_entry('train_model', {'model': selected_model, 'task': task_type, 'target': target})
+                            # Save model artifact to vault (placeholder for actual model object)
+                            add_vault_asset('model', selected_model, {'task': task_type, 'target': target})
                         else:
                             metrics, y_test, y_pred = ml.train_regression(
                                 X, y, selected_model
@@ -275,6 +291,9 @@ def render_ml_tab():
                                 "y_pred": y_pred,
                                 "type": "reg",
                             }
+                            # Log regression model training
+                            add_audit_entry('train_model', {'model': selected_model, 'task': task_type, 'target': target})
+                            add_vault_asset('model', selected_model, {'task': task_type, 'target': target})
                     except Exception as e:
                         st.error(f"Engine Failure: {str(e)}")
                         logger.error(f"ML Training Error: {e}", exc_info=True)
@@ -404,6 +423,7 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
 
 
 def render_export_tab():
+    import json
     if st.session_state.df is not None:
         render_hero(
             "Export Vault", 
@@ -444,9 +464,30 @@ def render_export_tab():
         ec8.download_button(
             "Download HTML", exp.to_html(st.session_state.df), f"{fname}.html"
         )
+
+        # New: Export audit log and vault assets
+        st.subheader("🕒 Audit Log & Vault Assets")
+        col_log, col_vault = st.columns(2)
+        with col_log:
+            if st.session_state.get('audit_log'):
+                audit_json = json.dumps(st.session_state.audit_log, indent=2)
+                st.download_button(
+                    "Download Audit Log",
+                    data=audit_json,
+                    file_name=f"{fname}_audit_log.json",
+                    mime="application/json",
+                )
+        with col_vault:
+            if st.session_state.get('vault_assets'):
+                vault_json = json.dumps(st.session_state.vault_assets, default=str, indent=2)
+                st.download_button(
+                    "Download Vault Assets",
+                    data=vault_json,
+                    file_name=f"{fname}_vault_assets.json",
+                    mime="application/json",
+                )
     else:
         st.warning("Please upload a file first.")
 
 
 # End of Tab Renderers
-

@@ -42,7 +42,9 @@ def init_session_state():
         "trained_models": {},
         "ml_task": "Classification",
         "keep_alive_started": False,
-        "session_id": str(uuid.uuid4())
+        "session_id": str(uuid.uuid4()),
+        "audit_log": [],
+        "vault_assets": []
     }
     for k, v in keys.items():
         if k not in st.session_state:
