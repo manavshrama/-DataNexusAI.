@@ -270,7 +270,7 @@ def render_ml_tab():
             )
             selected_model = st.selectbox("Select Model", model_list)
 
-            # Placeholder removed: training does not modify the working dataframe
+            if st.button("🚀 Train Model"):
                 with st.spinner("Training model..."):
                     try:
                         if task_type == "Classification":
