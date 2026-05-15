@@ -14,7 +14,6 @@ def load_css():
     theme = st.session_state.get('ui_theme', 'dark')
     css = DARK_CSS if theme == 'dark' else LIGHT_CSS
     st.markdown(css, unsafe_allow_html=True)
-    st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 def render_hero(title, subtitle, icon="🔮", bg_image=None):
     """Renders a cinematic Hero section with optional background image and neon gradients."""
