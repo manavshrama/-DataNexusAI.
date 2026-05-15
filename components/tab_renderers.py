@@ -6,7 +6,7 @@ import uuid
 import time
 import logging
 from modules.data_loader import DataLoader
-from utils.state_manager import add_audit_entry, add_vault_asset
+from utils.state_manager import add_audit_entry, add_vault_asset, get_working_df, set_working_df, get_audit_log, get_vault_assets
 from modules.eda import EDAModule
 from modules.visualization import VisualizationModule
 from modules.ml_models import MLModule
@@ -34,7 +34,7 @@ def render_upload_tab(doc_collection, embedder):
             if error:
                 st.error(error)
             else:
-                st.session_state.df = df
+                set_working_df(df)
                 st.session_state.df_original = df.copy()
                 st.session_state.file_name = uploaded_file.name
                 # Log upload action
@@ -71,8 +71,8 @@ def render_upload_tab(doc_collection, embedder):
 
                 st.rerun()
 
-    if st.session_state.df is not None:
-        stats = DataLoader.get_stats(st.session_state.df)
+    if get_working_df() is not None:
+        stats = DataLoader.get_stats(get_working_df())
         st.markdown('<div class="meta-label">NEXUS TELEMETRY</div>', unsafe_allow_html=True)
         c1, c2, c3, c4 = st.columns(4)
         
@@ -97,13 +97,13 @@ def render_upload_tab(doc_collection, embedder):
 
         st.subheader("Data Preview")
         rows = st.slider("Preview Rows", 5, 100, 10)
-        st.dataframe(st.session_state.df.head(rows), use_container_width=True)
+        st.dataframe(get_working_df().head(rows), use_container_width=True)
 
 
 
 
 def render_eda_tab():
-    if st.session_state.df is not None:
+    if get_working_df() is not None:
         eda = EDAModule()
         render_hero(
             "Lens of Discovery", 
@@ -113,7 +113,7 @@ def render_eda_tab():
         )
 
         with st.expander("Statistical Summary", expanded=True):
-            summary = eda.statistical_summary(st.session_state.df)
+            summary = eda.statistical_summary(get_working_df())
             if "numeric" in summary:
                 st.write("**Numerical Features**")
                 st.dataframe(summary["numeric"])
@@ -122,7 +122,7 @@ def render_eda_tab():
                 st.dataframe(summary["categorical"])
 
         with st.expander("Correlation Analysis"):
-            corr, pairs = eda.correlation_analysis(st.session_state.df)
+            corr, pairs = eda.correlation_analysis(get_working_df())
             if corr is not None:
                 fig = px.imshow(
                     corr,
@@ -143,20 +143,26 @@ def render_eda_tab():
         st.write("Apply data transformations here. These changes are committed to the global working dataset used in visualization and ML.")
         cc1, cc2, cc3 = st.columns(3)
         if cc1.button("Drop Duplicates (Commit)"):
-            st.session_state.df = DataLoader.clean_data(
-                st.session_state.df, "drop_duplicates"
+            set_working_df(
+                DataLoader.clean_data(
+                    get_working_df(), "drop_duplicates"
+                )
             )
             st.success("Committed: Duplicates dropped!")
             add_audit_entry('clean_data', {'action': 'drop_duplicates'})
         if cc2.button("Fill Nulls with Mean (Commit)"):
-            st.session_state.df = DataLoader.clean_data(
-                st.session_state.df, "fill_nulls_mean"
+            set_working_df(
+                DataLoader.clean_data(
+                    get_working_df(), "fill_nulls_mean"
+                )
             )
             st.success("Committed: Numeric nulls filled!")
             add_audit_entry('clean_data', {'action': 'fill_nulls_mean'})
         if cc3.button("Drop Rows with Nulls (Commit)"):
-            st.session_state.df = DataLoader.clean_data(
-                st.session_state.df, "drop_any_nulls"
+            set_working_df(
+                DataLoader.clean_data(
+                    get_working_df(), "drop_any_nulls"
+                )
             )
             st.success("Committed: Rows with nulls removed!")
             add_audit_entry('clean_data', {'action': 'drop_any_nulls'})
@@ -165,7 +171,7 @@ def render_eda_tab():
 
 
 def render_viz_tab():
-    if st.session_state.df is not None:
+    if get_working_df() is not None:
         render_hero(
             "Visual Galaxy", 
             "Transform raw dimensions into high-fidelity narratives.", 
@@ -192,7 +198,7 @@ def render_viz_tab():
             chart_type = st.selectbox("Select Target Visualization", viz_categories[category])
             
             st.markdown("---")
-            all_cols = st.session_state.df.columns.tolist()
+            all_cols = get_working_df().columns.tolist()
             x_ax = st.selectbox("X Axis (Primary)", all_cols)
             y_ax = st.selectbox("Y Axis (Secondary)", [None] + all_cols)
             color_ax = st.selectbox("Color Mapping", [None] + all_cols)
@@ -205,7 +211,7 @@ def render_viz_tab():
             with st.container(border=True):
                 fig = viz.plot(
                     chart_type,
-                    st.session_state.df,
+                    get_working_df(),
                     x=x_ax,
                     y=y_ax,
                     color=color_ax,
@@ -220,7 +226,7 @@ def render_viz_tab():
                     # Action Bar
                     ac1, ac2 = st.columns(2)
                     if ac1.checkbox("🔬 Show Raw Extraction", value=False):
-                        st.dataframe(st.session_state.df[[x_ax] + ([y_ax] if y_ax else [])].head(50), use_container_width=True)
+                        st.dataframe(get_working_df()[[x_ax] + ([y_ax] if y_ax else [])].head(50), use_container_width=True)
                 else:
                     st.error("Engine Refusal: Incompatible column types for this visualization.")
     else:
@@ -228,7 +234,7 @@ def render_viz_tab():
 
 
 def render_ml_tab():
-    if st.session_state.df is not None:
+    if get_working_df() is not None:
         ml = MLModule()
         render_hero(
             "ML Studio", 
@@ -244,10 +250,10 @@ def render_ml_tab():
         )
 
         if task_type in ["Classification", "Regression"]:
-            target = st.selectbox("Select Target Column", st.session_state.df.columns)
+            target = st.selectbox("Select Target Column", get_working_df().columns)
             
             # Basic Validation
-            unique_vals = st.session_state.df[target].nunique()
+            unique_vals = get_working_df()[target].nunique()
             if task_type == "Classification":
                 if unique_vals < 2:
                     st.error("Target column must have at least 2 unique classes for classification.")
@@ -255,7 +261,7 @@ def render_ml_tab():
                 if unique_vals > 50:
                     st.warning(f"Target has {unique_vals} unique values. Classification might be slow or inappropriate.")
 
-            X, y = ml.preprocess(st.session_state.df, target, task=task_type.lower())
+            X, y = ml.preprocess(get_working_df(), target, task=task_type.lower())
 
             model_list = (
                 list(ml.classification_models.keys())
@@ -264,7 +270,7 @@ def render_ml_tab():
             )
             selected_model = st.selectbox("Select Model", model_list)
 
-            if st.button(f"Train {selected_model}"):
+            # Placeholder removed: training does not modify the working dataframe
                 with st.spinner("Training model..."):
                     try:
                         if task_type == "Classification":
@@ -327,7 +333,7 @@ def render_ml_tab():
 
 
 def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
-    if st.session_state.df is not None:
+    if get_working_df() is not None:
         render_hero(
             "Neural Chat", 
             "Ask anything about your data. Get code, charts, and insights instantly.", 
@@ -355,7 +361,7 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                     st.markdown(msg["content"])
                     if role == "assistant" and "```python" in msg["content"]:
                         from services.execution_service import execute_code_blocks
-                        execute_code_blocks(msg["content"], st.session_state.df)
+                        execute_code_blocks(msg["content"], get_working_df())
 
         if prompt := st.chat_input("Query the Nexus..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
@@ -388,11 +394,11 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                     st.session_state.messages.append({"role": "assistant", "content": cached_answer})
                     # Re-execute code if present in cache
                     from services.execution_service import execute_code_blocks
-                    execute_code_blocks(cached_answer, st.session_state.df)
+                    execute_code_blocks(cached_answer, get_working_df())
                 else:
                     with st.spinner("AI is thinking..."):
                         # Use the consolidated ask method
-                        response_data = bot.ask(prompt, st.session_state.df, st.session_state.messages)
+                        response_data = bot.ask(prompt, get_working_df(), st.session_state.messages)
                         
                         answer = response_data.get("answer", "Error in processing.")
                         code = response_data.get("python_code", "")
@@ -400,7 +406,7 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                         st.markdown(answer)
                         if code:
                             from services.execution_service import execute_code_blocks
-                            execute_code_blocks(f"```python\n{code}\n```", st.session_state.df)
+                            execute_code_blocks(f"```python\n{code}\n```", get_working_df())
                         
                         full_reply = f"{answer}\n\n```python\n{code}\n```" if code else answer
                         st.session_state.messages.append({"role": "assistant", "content": full_reply})
@@ -424,7 +430,7 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
 
 def render_export_tab():
     import json
-    if st.session_state.df is not None:
+    if get_working_df() is not None:
         render_hero(
             "Export Vault", 
             "Download your cleaned data and generated assets", 
@@ -439,38 +445,38 @@ def render_export_tab():
 
         ec1, ec2, ec3, ec4 = st.columns(4)
         ec1.download_button(
-            "Download CSV", exp.to_csv(st.session_state.df), f"{fname}.csv", "text/csv"
+            "Download CSV", exp.to_csv(get_working_df()), f"{fname}.csv", "text/csv"
         )
         ec2.download_button(
-            "Download Excel", exp.to_excel(st.session_state.df), f"{fname}.xlsx"
+            "Download Excel", exp.to_excel(get_working_df()), f"{fname}.xlsx"
         )
         ec3.download_button(
-            "Download JSON", exp.to_json(st.session_state.df), f"{fname}.json"
+            "Download JSON", exp.to_json(get_working_df()), f"{fname}.json"
         )
         ec4.download_button(
-            "Download PDF", exp.to_pdf(st.session_state.df), f"{fname}.pdf"
+            "Download PDF", exp.to_pdf(get_working_df()), f"{fname}.pdf"
         )
 
         ec5, ec6, ec7, ec8 = st.columns(4)
         ec5.download_button(
-            "Download SQL", exp.to_sql(st.session_state.df), f"{fname}.sql"
+            "Download SQL", exp.to_sql(get_working_df()), f"{fname}.sql"
         )
         ec6.download_button(
-            "Download Word", exp.to_word(st.session_state.df), f"{fname}.docx"
+            "Download Word", exp.to_word(get_working_df()), f"{fname}.docx"
         )
         ec7.download_button(
-            "Download Markdown", exp.to_markdown(st.session_state.df), f"{fname}.md"
+            "Download Markdown", exp.to_markdown(get_working_df()), f"{fname}.md"
         )
         ec8.download_button(
-            "Download HTML", exp.to_html(st.session_state.df), f"{fname}.html"
+            "Download HTML", exp.to_html(get_working_df()), f"{fname}.html"
         )
 
         # New: Export audit log and vault assets
         st.subheader("🕒 Audit Log & Vault Assets")
         col_log, col_vault = st.columns(2)
         with col_log:
-            if st.session_state.get('audit_log'):
-                audit_json = json.dumps(st.session_state.audit_log, indent=2)
+            if get_audit_log():
+                audit_json = json.dumps(get_audit_log(), indent=2)
                 st.download_button(
                     "Download Audit Log",
                     data=audit_json,
@@ -478,8 +484,8 @@ def render_export_tab():
                     mime="application/json",
                 )
         with col_vault:
-            if st.session_state.get('vault_assets'):
-                vault_json = json.dumps(st.session_state.vault_assets, default=str, indent=2)
+            if get_vault_assets():
+                vault_json = json.dumps(get_vault_assets(), default=str, indent=2)
                 st.download_button(
                     "Download Vault Assets",
                     data=vault_json,

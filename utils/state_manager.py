@@ -46,4 +46,39 @@ def add_vault_asset(asset_type: str, data: Any, metadata: Optional[Dict[str, Any
     }
     if "vault_assets" not in st.session_state:
         st.session_state.vault_assets = []
-    st.session_state.vault_assets.append(asset)
+def get_audit_log() -> list:
+    """Return the current audit log from session state."""
+    return st.session_state.get('audit_log', [])
+
+def get_vault_assets() -> list:
+    """Return the list of stored vault assets."""
+    return st.session_state.get('vault_assets', [])
+
+def clear_state(preserve_keys: list = None) -> None:
+    """Reset session state, optionally preserving specified keys.
+    
+    Args:
+        preserve_keys (list, optional): List of session state keys to retain.
+    """
+    if preserve_keys is None:
+        preserve_keys = []
+    # Preserve values
+    preserved = {k: st.session_state.get(k) for k in preserve_keys}
+    st.session_state.clear()
+    # Restore preserved keys
+    for k, v in preserved.items():
+        st.session_state[k] = v
+def get_working_df() -> pd.DataFrame:
+    """Return the current working DataFrame from session state.
+    Alias for st.session_state.df for backward compatibility."""
+    return st.session_state.get('df')
+
+def set_working_df(df: pd.DataFrame) -> None:
+    """Set the working DataFrame in session state.
+    Updates both 'df' and 'working_df' keys to keep them in sync."""
+    st.session_state.df = df
+    st.session_state.working_df = df
+
+# Ensure alias consistency on initialization
+if 'working_df' not in st.session_state:
+    st.session_state.working_df = st.session_state.get('df')

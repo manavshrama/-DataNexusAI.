@@ -75,8 +75,46 @@ class ChatbotModule:
             
         return schema
 
+    def _local_fallback(self, query: str, df: Optional[pd.DataFrame]) -> Dict[str, Any]:
+        """Generate a simple fallback response when no AI APIs are configured.
+
+        Handles basic queries about the dataset.
+        """
+        if df is None:
+            return {
+                "answer": "No dataset loaded. Please upload a CSV file.",
+                "insight_type": "error",
+                "python_code": "",
+                "suggestions": [],
+                "confidence": "low",
+            }
+        q = query.lower()
+        # Simple heuristic responses
+        if "columns" in q:
+            cols = list(df.columns)
+            answer = f"Dataset columns are: {', '.join(cols)}."
+            code = "st.write(df.columns)"
+        elif "head" in q or "preview" in q:
+            answer = "Here are the first few rows of the dataset."
+            code = "st.dataframe(df.head())"
+        elif "summary" in q or "stat" in q:
+            answer = "Statistical summary of numeric columns."
+            code = "st.write(df.describe())"
+        else:
+            answer = "I can provide basic data insights. Try asking about columns, preview, or summary."
+            code = ""
+        return {
+            "answer": answer,
+            "insight_type": "summary",
+            "python_code": code,
+            "suggestions": [],
+            "confidence": "medium",
+        }
+
     def ask(self, query: str, df: Optional[pd.DataFrame], history: List[Dict[str, str]]) -> Dict[str, Any]:
-        """Processes a user query using the available AI engines with optimized context."""
+        """Processes a user query using the available AI engines with optimized context.
+        Falls back to a local heuristic if no API keys are configured.
+        """
         # Build Semantic Knowledge Base Context (Aggressive Pruning)
         summary = self.get_dataset_summary(df)
         knowledge_context = f"SEMANTIC_SCHEMA: {json.dumps(summary, default=str)}\n"
@@ -116,7 +154,5 @@ class ChatbotModule:
             except Exception as e:
                 st.error(f"Gemini Engine Offline: {e}")
         
-        return {
-            "answer": "Neural engines are currently disconnected. Please verify your API credentials in the sidebar.", 
-            "insight_type": "error"
-        }
+        # Fallback: local heuristic response
+        return self._local_fallback(query, df)
