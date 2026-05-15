@@ -78,7 +78,7 @@ class MLModule:
         
         # Encode target if needed
         y = df[target]
-        if task == "classification" and y.dtype == object:
+        if task == "classification":
             le = LabelEncoder()
             y = le.fit_transform(y)
         

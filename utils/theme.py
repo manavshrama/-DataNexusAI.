@@ -10,7 +10,10 @@ def get_base64_image(image_path):
 
 def load_css():
     """Injects the comprehensive NexusNoir CSS from constants."""
-    from utils.constants import CUSTOM_CSS
+    from utils.constants import DARK_CSS, LIGHT_CSS
+    theme = st.session_state.get('ui_theme', 'dark')
+    css = DARK_CSS if theme == 'dark' else LIGHT_CSS
+    st.markdown(css, unsafe_allow_html=True)
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 def render_hero(title, subtitle, icon="🔮", bg_image=None):
@@ -57,4 +60,15 @@ def glass_card(title=None, subtitle=None):
     if header_html:
         st.markdown(header_html, unsafe_allow_html=True)
     
-    return st.container(border=True)
+def load_lottie_url(url: str):
+    import requests
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
+def render_lottie(url, height=200, key=None):
+    from streamlit_lottie import st_lottie
+    lottie_json = load_lottie_url(url)
+    if lottie_json:
+        st_lottie(lottie_json, height=height, key=key)

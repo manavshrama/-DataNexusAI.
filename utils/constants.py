@@ -1,5 +1,5 @@
 # --- CUSTOM CSS ---
-CUSTOM_CSS = """
+DARK_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;500;600&display=swap');
     
@@ -102,13 +102,98 @@ CUSTOM_CSS = """
         max-width: 80%;
     }
 
-    /* Gradient Text Utility */
+    /* Grain Overlay for Texture */
+    [data-testid="stAppViewContainer"]::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 9999;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        background: #050505;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #00D2FF 0%, #9D50BB 100%);
+        border-radius: 10px;
+    }
+
+    /* Status Indicator Animation */
+    @keyframes pulse-dot {
+        0% { transform: scale(0.9); opacity: 0.7; }
+        50% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0.9); opacity: 0.7; }
+    }
+    .status-dot {
+        height: 8px;
+        width: 8px;
+        background-color: #00D2FF;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+        box-shadow: 0 0 10px #00D2FF;
+        animation: pulse-dot 2s infinite ease-in-out;
+    }
+
+    /* Gradient Text Animation */
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
     .gradient-text {
-        background: linear-gradient(90deg, #00D2FF, #9D50BB);
+        background: linear-gradient(-45deg, #00D2FF, #9D50BB, #00D2FF, #9D50BB);
+        background-size: 400% 400%;
+        animation: gradient-shift 15s ease infinite;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-family: 'Syne', sans-serif;
         font-weight: 800;
+    }
+</style>
+"""
+LIGHT_CSS = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;500;600&display=swap');
+    
+    html, body, [data-testid=\"stAppViewContainer\"] {
+        font-family: 'Outfit', sans-serif !important;
+        background-color: #f7f7f7 !important;
+        color: #202020 !important;
+    }
+    
+    /* Headers with Syne */
+    h1, h2, h3, [data-testid=\"stHeader\"] {
+        font-family: 'Syne', sans-serif !important;
+        font-weight: 800 !important;
+        color: #111111 !important;
+        letter-spacing: -0.04em !important;
+        text-transform: uppercase;
+    }
+    
+    /* Sidebar Light */
+    [data-testid=\"stSidebar\"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid rgba(0,0,0,0.05) !important;
+    }
+    
+    /* Glass Cards Light */
+    .stMetric, .stChatMessage, .stExpander, div.glass-card {
+        background: rgba(255, 255, 255, 0.6) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    }
+    
+    .stButton > button {
+        background: linear-gradient(135deg, #6E48AA 0%, #9D50BB 100%) !important;
     }
 </style>
 """

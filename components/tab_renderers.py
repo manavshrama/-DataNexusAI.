@@ -233,6 +233,16 @@ def render_ml_tab():
 
         if task_type in ["Classification", "Regression"]:
             target = st.selectbox("Select Target Column", st.session_state.df.columns)
+            
+            # Basic Validation
+            unique_vals = st.session_state.df[target].nunique()
+            if task_type == "Classification":
+                if unique_vals < 2:
+                    st.error("Target column must have at least 2 unique classes for classification.")
+                    return
+                if unique_vals > 50:
+                    st.warning(f"Target has {unique_vals} unique values. Classification might be slow or inappropriate.")
+
             X, y = ml.preprocess(st.session_state.df, target, task=task_type.lower())
 
             model_list = (
@@ -244,26 +254,30 @@ def render_ml_tab():
 
             if st.button(f"Train {selected_model}"):
                 with st.spinner("Training model..."):
-                    if task_type == "Classification":
-                        metrics, cm, importance = ml.train_classification(
-                            X, y, selected_model
-                        )
-                        st.session_state.ml_results = {
-                            "metrics": metrics,
-                            "cm": cm,
-                            "importance": importance,
-                            "type": "class",
-                        }
-                    else:
-                        metrics, y_test, y_pred = ml.train_regression(
-                            X, y, selected_model
-                        )
-                        st.session_state.ml_results = {
-                            "metrics": metrics,
-                            "y_test": y_test,
-                            "y_pred": y_pred,
-                            "type": "reg",
-                        }
+                    try:
+                        if task_type == "Classification":
+                            metrics, cm, importance = ml.train_classification(
+                                X, y, selected_model
+                            )
+                            st.session_state.ml_results = {
+                                "metrics": metrics,
+                                "cm": cm,
+                                "importance": importance,
+                                "type": "class",
+                            }
+                        else:
+                            metrics, y_test, y_pred = ml.train_regression(
+                                X, y, selected_model
+                            )
+                            st.session_state.ml_results = {
+                                "metrics": metrics,
+                                "y_test": y_test,
+                                "y_pred": y_pred,
+                                "type": "reg",
+                            }
+                    except Exception as e:
+                        st.error(f"Engine Failure: {str(e)}")
+                        logger.error(f"ML Training Error: {e}", exc_info=True)
 
         if st.session_state.ml_results:
             res = st.session_state.ml_results
