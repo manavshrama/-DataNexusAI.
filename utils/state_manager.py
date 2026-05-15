@@ -46,6 +46,8 @@ def add_vault_asset(asset_type: str, data: Any, metadata: Optional[Dict[str, Any
     }
     if "vault_assets" not in st.session_state:
         st.session_state.vault_assets = []
+    st.session_state.vault_assets.append(asset)
+
 def get_audit_log() -> list:
     """Return the current audit log from session state."""
     return st.session_state.get('audit_log', [])
