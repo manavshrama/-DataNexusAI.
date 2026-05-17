@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataNexus AI: Master Architectural Neural Poster (Light Edition)</title>
+  <meta name="description" content="A premium, light-themed visual A3 blueprint poster detailing the modular architecture and core data science workflow pipelines of DataNexus AI.">
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Premium Theme Tokens (Default: Ultra-Light Holographic Glassmorphism) */
+    :root {
+      --primary-bg: #F9FAFC;
+      --secondary-bg: #FFFFFF;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(90, 45, 130, 0.08);
+      --iridescent-border: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(157, 80, 187, 0.2), rgba(255, 117, 140, 0.2));
+      --text-primary: #1C122C;
+      --text-secondary: #4A3E5C;
+      --text-muted: #8E82A1;
+      --primary-accent: #6E48AA;
+      --secondary-accent: #9D50BB;
+      --highlight-accent: #FF758C;
+      --accent-glow: rgba(110, 72, 170, 0.08);
+      --purple-glow: rgba(157, 80, 187, 0.08);
+      --spine-line: rgba(110, 72, 170, 0.15);
+      --dot-color: rgba(90, 45, 130, 0.04);
+      --card-shadow: 0 8px 30px rgba(90, 45, 130, 0.05);
+    }
+
+    /* Interactive Dark Theme Override (Obsidian Glass) */
+    [data-theme="dark"] {
+      --primary-bg: #050408;
+      --secondary-bg: #0C0A12;
+      --card-bg: rgba(12, 10, 18, 0.8);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --iridescent-border: linear-gradient(135deg, rgba(0, 210, 255, 0.3), rgba(157, 80, 187, 0.3));
+      --text-primary: #FFFFFF;
+      --text-secondary: #B7AEC4;
+      --text-muted: #6F667D;
+      --primary-accent: #00D2FF;
+      --secondary-accent: #9D50BB;
+      --highlight-accent: #FF758C;
+      --accent-glow: rgba(0, 210, 255, 0.15);
+      --purple-glow: rgba(157, 80, 187, 0.15);
+      --spine-line: rgba(255, 255, 255, 0.12);
+      --dot-color: rgba(255, 255, 255, 0.04);
+      --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #ECEBF0;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 0;
+      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Floating Premium Controller */
+    .theme-toggle-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 26px;
+      border: 1px solid var(--card-border);
+      background-color: var(--secondary-bg);
+      color: var(--text-primary);
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(90, 45, 130, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .theme-toggle-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary-accent);
+      box-shadow: 0 10px 28px rgba(110, 72, 170, 0.15);
+    }
+
+    /* A3 Physical Proportions Core Container */
+    .a3-poster {
+      width: 297mm;
+      height: 420mm;
+      background-color: var(--primary-bg);
+      border: 1px solid var(--card-border);
+      position: relative;
+      overflow: hidden;
+      padding: 16mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 50px rgba(90, 45, 130, 0.08);
+    }
+
+    /* Elegant Dot Grid Design Layer */
+    .a3-poster::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
+      background-size: 16px 16px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Premium Pastel Mesh Overlays */
+    .mesh-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 5% 5%, rgba(0, 210, 255, 0.06) 0%, transparent 40%),
+                  radial-gradient(circle at 95% 5%, rgba(255, 117, 140, 0.06) 0%, transparent 40%),
+                  radial-gradient(circle at 50% 95%, rgba(157, 80, 187, 0.05) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Outer Blueprint Bounds Layout */
+    .blueprint-border {
+      position: absolute;
+      top: 5mm;
+      left: 5mm;
+      right: 5mm;
+      bottom: 5mm;
+      border: 1px dashed rgba(110, 72, 170, 0.12);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .border-node {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: var(--primary-accent);
+      border-style: solid;
+      z-index: 3;
+    }
+    .node-tl { top: 4.5mm; left: 4.5mm; border-width: 2px 0 0 2px; }
+    .node-tr { top: 4.5mm; right: 4.5mm; border-width: 2px 2px 0 0; }
+    .node-bl { bottom: 4.5mm; left: 4.5mm; border-width: 0 0 2px 2px; }
+    .node-br { bottom: 4.5mm; right: 4.5mm; border-width: 0 2px 2px 0; }
+
+    /* HEADER */
+    .header-zone {
+      z-index: 10;
+      position: relative;
+      text-align: center;
+      margin-bottom: 6mm;
+      border-bottom: 1px solid rgba(110, 72, 170, 0.08);
+      padding-bottom: 6mm;
+    }
+
+    .meta-badge {
+      font-family: 'Fira Code', monospace;
+      color: var(--primary-accent);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 2mm;
+      display: inline-block;
+    }
+
+    .main-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent), var(--highlight-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2mm;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* CENTRAL PIPELINE GRIDS */
+    .middle-zone {
+      z-index: 10;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 16mm;
+      row-gap: 6mm;
+      position: relative;
+      padding: 0 4mm;
+    }
+
+    /* Central Visual Spine Line */
+    .pipeline-grid::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 1%;
+      bottom: 1%;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--primary-accent), var(--secondary-accent), var(--highlight-accent));
+      box-shadow: 0 0 8px rgba(110, 72, 170, 0.2);
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    /* Holographic Card Layouts */
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 5mm;
+      position: relative;
+      box-shadow: var(--card-shadow);
+      z-index: 2;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Gorgeous Iridescent Border Gradient Effect */
+    .step-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 14px;
+      padding: 1px;
+      background: var(--iridescent-border);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .step-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(110, 72, 170, 0.1);
+    }
+
+    .step-header {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--primary-accent);
+      font-weight: 600;
+      margin-bottom: 2mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .step-tag {
+      background: rgba(110, 72, 170, 0.05);
+      color: var(--secondary-accent);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      border: 1px solid rgba(157, 80, 187, 0.12);
+    }
+
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2mm;
+    }
+
+    .step-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* SVG Exhibits Frame */
+    .exhibits-row {
+      grid-column: span 2;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 5mm;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 6mm;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--card-shadow);
+      position: relative;
+    }
+
+    .exhibits-row::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 14px;
+      padding: 1px;
+      background: var(--iridescent-border);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .exhibit-cell {
+      text-align: center;
+      flex: 1;
+    }
+
+    .exhibit-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-bottom: 2.5mm;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .graphic-box {
+      width: 100%;
+      height: 85px;
+      background: rgba(110, 72, 170, 0.02);
+      border-radius: 8px;
+      border: 1px dashed rgba(110, 72, 170, 0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* FOOTER */
+    .footer-zone {
+      z-index: 10;
+      position: relative;
+      border-top: 1px solid rgba(110, 72, 170, 0.08);
+      padding-top: 5mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+    }
+
+    .tech-logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #FFF;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+    }
+
+    .footer-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .footer-right {
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: var(--secondary-accent);
+      text-align: right;
+      font-weight: 500;
+    }
+
+    /* Printing Configuration for portrait A3 output */
+    @media print {
+      body {
+        background-color: #FFFFFF;
+        padding: 0;
+      }
+      .theme-toggle-btn {
+        display: none !important;
+      }
+      .a3-poster {
+        width: 297mm !important;
+        height: 420mm !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 16mm !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Active Mode Controller -->
+  <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle visual theme mode">
+    Switch to Dark Obsidian
+  </button>
+
+  <!-- Printable A3 Sheet Container -->
+  <main class="a3-poster" id="posterContainer">
+    <div class="mesh-gradient"></div>
+    <div class="blueprint-border"></div>
+    <div class="border-node node-tl"></div>
+    <div class="border-node node-tr"></div>
+    <div class="border-node node-bl"></div>
+    <div class="border-node node-br"></div>
+
+    <!-- Header Section -->
+    <header class="header-zone">
+      <span class="meta-badge">Architectural Layout Spec</span>
+      <h1 class="main-title">DATANEXUS AI</h1>
+      <p class="subtitle">Omnipresent Data Science & AI Neural Pipeline</p>
+    </header>
+
+    <!-- Core Pipeline & Exhibits Section -->
+    <section class="middle-zone">
+      <div class="pipeline-grid">
+        
+        <!-- Step 1 -->
+        <article class="step-card">
+          <div class="step-header">
+            <span>[STAGE_01]</span>
+            <span class="step-tag">INGEST</span>
+          </div>
+          <h3 class="step-title">1. Smart Ingestion Hub</h3>
+          <p class="step-desc">Robust parsing architecture scanning for CSV, JSON, and all standard Excel workbooks. Features auto-encoding scanning, case-insensitive mapping, and cell integrity audits.</p>
+        </article>
+
+        <!-- Step 2 -->
+        <article class="step-card">
+          <div class="step-header">
+            <span>[STAGE_02]</span>
+            <span class="step-tag">EDA</span>
+          </div>
+          <h3 class="step-title">2. Descriptive Refinery</h3>
+          <p class="step-desc">Descriptive statistical profiling alongside correlation indices. Computes Pearson matrices and high-correlation triggers, tracking state history boundaries for dataframe rollbacks.</p>
+        </article>
+
+        <!-- Step 3 -->
+        <article class="step-card">
+          <div class="step-header">
+            <span>[STAGE_03]</span>
+            <span class="step-tag">VIZ</span>
+          </div>
+          <h3 class="step-title">3. Visual Galaxy Studio</h3>
+          <p class="step-desc">Features 48+ Plotly visualization configurations spanning distributions and compositions. Supports dynamic axis bindings and custom HSL color-scale overrides.</p>
+        </article>
+
+        <!-- Step 4 -->
+        <article class="step-card">
+          <div class="step-header">
+            <span>[STAGE_04]</span>
+            <span class="step-tag">ML</span>
+          </div>
+          <h3 class="step-title">4. ML Telemetry Lab</h3>
+          <p class="step-desc">Trains classification, regression, and clustering algorithms. Scales and preprocesses features automatically, generating R², confusion matrices, and model splits.</p>
+        </article>
+
+        <!-- Step 5 -->
+        <article class="step-card">
+          <div class="step-header">
+            <span>[STAGE_05]</span>
+            <span class="step-tag">CHAT</span>
+          </div>
+          <h3 class="step-title">5. Neural Chat Engine</h3>
+          <p class="step-desc">Redundant Groq (Llama-3) to Gemini fallback routing engine. Anchored by ChromaDB zero-token semantic caching and sandboxed secure code compilation environments.</p>
+        </article>
+
+        <!-- Step 6 -->
+        <article class="step-card">
+          <div class="step-header">
+            <span>[STAGE_06]</span>
+            <span class="step-tag">EXPORT</span>
+          </div>
+          <h3 class="step-title">6. Export Vault</h3>
+          <p class="step-desc">Compiles clean analytics pipelines into custom-styled Excel sheets, corporate Word reports, database-safe SQL schemas, and high-fidelity formatted PDFs.</p>
+        </article>
+
+        <!-- Exhibits Row -->
+        <div class="exhibits-row">
+          
+          <div class="exhibit-cell">
+            <div class="exhibit-label">Pearson Matrix</div>
+            <div class="graphic-box">
+              <svg width="100" height="70" viewBox="0 0 100 70">
+                <rect x="10" y="5" width="20" height="20" fill="var(--primary-accent)" opacity="0.8"/>
+                <rect x="35" y="5" width="20" height="20" fill="var(--secondary-accent)" opacity="0.6"/>
+                <rect x="60" y="5" width="20" height="20" fill="var(--highlight-accent)" opacity="0.4"/>
+                <rect x="10" y="30" width="20" height="20" fill="var(--secondary-accent)" opacity="0.5"/>
+                <rect x="35" y="30" width="20" height="20" fill="var(--primary-accent)" opacity="0.9"/>
+                <rect x="60" y="30" width="20" height="20" fill="var(--secondary-accent)" opacity="0.7"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="exhibit-cell">
+            <div class="exhibit-label">Visual Studio KDE</div>
+            <div class="graphic-box">
+              <svg width="120" height="70" viewBox="0 0 120 70" fill="none">
+                <path d="M10 60 Q 30 10, 50 40 T 90 20 T 110 60" stroke="var(--primary-accent)" stroke-width="2" fill="none"/>
+                <path d="M10 60 Q 30 10, 50 40 T 90 20 T 110 60 L 110 60 L 10 60 Z" fill="var(--primary-accent)" opacity="0.1"/>
+                <line x1="50" y1="5" x2="50" y2="60" stroke="var(--highlight-accent)" stroke-dasharray="2" stroke-width="1"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="exhibit-cell">
+            <div class="exhibit-label">Residual Path</div>
+            <div class="graphic-box">
+              <svg width="100" height="70" viewBox="0 0 100 70" fill="none">
+                <line x1="10" y1="60" x2="90" y2="10" stroke="var(--text-muted)" stroke-dasharray="3"/>
+                <circle cx="20" cy="50" r="3" fill="var(--primary-accent)"/>
+                <circle cx="40" cy="45" r="3" fill="var(--secondary-accent)"/>
+                <circle cx="65" cy="20" r="3" fill="var(--highlight-accent)"/>
+                <circle cx="80" cy="15" r="3" fill="var(--secondary-accent)"/>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer-zone">
+      <div class="footer-left">
+        <div class="tech-logo">Ω</div>
+        <div class="footer-desc">
+          <strong>DataNexus Core Systems Inc.</strong><br>
+          Modular Orchestration Layer Specifications
+        </div>
+      </div>
+      <div class="footer-right">
+        <span>SYS_VER: 1.2.0-PROD</span><br>
+        <span>STATUS: ACTIVE_NODE</span>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.getElementById("themeBtn");
+      
+      if (body.getAttribute("data-theme") === "dark") {
+        body.removeAttribute("data-theme");
+        btn.innerText = "Switch to Dark Obsidian";
+      } else {
+        body.setAttribute("data-theme", "dark");
+        btn.innerText = "Switch to Light Holographic";
+      }
+    }
+  </script>
+</body>
+</html>
