@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataNexus AI: Omnipresent Data Science & AI Neural Pipeline Poster</title>
+  <meta name="description" content="A high-precision modular blueprint visual poster detailing the core architecture, design tokens, and technical pipelines of DataNexus AI.">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Theme Tokens (Default: NexusNoir Dark Mode) */
+    :root {
+      --primary-bg: #050505;
+      --secondary-bg: #0A0A0A;
+      --card-bg: rgba(18, 18, 18, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #FFFFFF;
+      --text-secondary: #B0B0B0;
+      --text-muted: #666666;
+      --primary-accent: #00D2FF;
+      --secondary-accent: #9D50BB;
+      --interactive-accent: #6E48AA;
+      --accent-glow: rgba(0, 210, 255, 0.2);
+      --purple-glow: rgba(157, 80, 187, 0.2);
+      --grid-line: rgba(255, 255, 255, 0.03);
+      --spine-line: rgba(255, 255, 255, 0.1);
+      --dot-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Light Theme Tokens: NexusAlabaster */
+    [data-theme="light"] {
+      --primary-bg: #F5F6F8;
+      --secondary-bg: #FFFFFF;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --text-primary: #111111;
+      --text-secondary: #444444;
+      --text-muted: #888888;
+      --primary-accent: #6E48AA;
+      --secondary-accent: #9D50BB;
+      --interactive-accent: #00D2FF;
+      --accent-glow: rgba(110, 72, 170, 0.15);
+      --purple-glow: rgba(157, 80, 187, 0.15);
+      --grid-line: rgba(0, 0, 0, 0.03);
+      --spine-line: rgba(0, 0, 0, 0.08);
+      --dot-color: rgba(0, 0, 0, 0.04);
+    }
+
+    /* Global Body Resets */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #1a1a1a;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 0;
+      transition: background-color 0.4s ease;
+    }
+
+    /* Interactive Theme Toggle Trigger */
+    .theme-toggle-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      border: 1px solid var(--card-border);
+      background-color: var(--secondary-bg);
+      color: var(--text-primary);
+      border-radius: 30px;
+      font-weight: 500;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .theme-toggle-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      border-color: var(--primary-accent);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    /* A3 Portrait Dimensions Specification */
+    .a3-poster {
+      width: 297mm;
+      height: 420mm;
+      background-color: var(--primary-bg);
+      border: 1px solid var(--card-border);
+      position: relative;
+      overflow: hidden;
+      padding: 15mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background-color 0.4s ease;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Tech Analog Dot Grid Layer */
+    .a3-poster::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
+      background-size: 18px 18px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Glowing Linear Accents */
+    .glowing-mesh {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 10% 10%, var(--accent-glow) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 90%, var(--purple-glow) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Outer Tech Border */
+    .tech-border-frame {
+      position: absolute;
+      top: 5mm;
+      left: 5mm;
+      right: 5mm;
+      bottom: 5mm;
+      border: 1px dashed var(--card-border);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .tech-corner {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: var(--primary-accent);
+      border-style: solid;
+      z-index: 3;
+    }
+    .c-tl { top: 4.5mm; left: 4.5mm; border-width: 2px 0 0 2px; }
+    .c-tr { top: 4.5mm; right: 4.5mm; border-width: 2px 2px 0 0; }
+    .c-bl { bottom: 4.5mm; left: 4.5mm; border-width: 0 0 2px 2px; }
+    .c-br { bottom: 4.5mm; right: 4.5mm; border-width: 0 2px 2px 0; }
+
+    /* CONTENT STRUCTURE */
+    .header-zone {
+      z-index: 10;
+      position: relative;
+      text-align: center;
+      margin-bottom: 8mm;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 6mm;
+    }
+
+    .meta-tag {
+      font-family: 'Fira Code', monospace;
+      color: var(--primary-accent);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 2mm;
+      display: inline-block;
+    }
+
+    .main-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2mm;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Core Visual Workflow Section */
+    .middle-zone {
+      z-index: 10;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    /* Pipeline Connector Central Spine */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 16mm;
+      row-gap: 6mm;
+      position: relative;
+      padding: 0 4mm;
+    }
+
+    .pipeline-grid::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 2%;
+      bottom: 2%;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--primary-accent), var(--secondary-accent));
+      box-shadow: 0 0 10px var(--primary-accent);
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    /* Step Card Aesthetics */
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 5mm;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      z-index: 2;
+      backdrop-filter: blur(12px);
+    }
+
+    .step-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary-accent);
+      box-shadow: 0 10px 30px var(--accent-glow);
+    }
+
+    .step-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--primary-accent);
+      font-weight: 500;
+      margin-bottom: 1.5mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .step-node-tag {
+      background: var(--accent-glow);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      border: 1px solid rgba(0, 210, 255, 0.2);
+    }
+
+    [data-theme="light"] .step-node-tag {
+      background: rgba(110, 72, 170, 0.08);
+      border-color: rgba(110, 72, 170, 0.15);
+    }
+
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2mm;
+    }
+
+    .step-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* SVG Graphical Exhibit Panels */
+    .exhibit-panel {
+      grid-column: span 2;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 5mm;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 6mm;
+      backdrop-filter: blur(12px);
+    }
+
+    .exhibit-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .exhibit-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 2.5mm;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .exhibit-graphic {
+      width: 100%;
+      height: 90px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    [data-theme="light"] .exhibit-graphic {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Footer Zone */
+    .footer-zone {
+      z-index: 10;
+      position: relative;
+      border-top: 1px solid var(--card-border);
+      padding-top: 5mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+    }
+
+    .tech-logo-mark {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #FFF;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .footer-right {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--primary-accent);
+      text-align: right;
+    }
+
+    /* Precision @media Print Setup for A3 Sheet Output */
+    @media print {
+      body {
+        background-color: #ffffff;
+        padding: 0;
+      }
+      .theme-toggle-btn {
+        display: none !important;
+      }
+      .a3-poster {
+        width: 297mm !important;
+        height: 420mm !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 15mm !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Active Mode Controller -->
+  <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle visual layout color theme">
+    Switch to Light Theme
+  </button>
+
+  <!-- Printable A3 Sheet Container -->
+  <main class="a3-poster" id="posterContainer">
+    <div class="glowing-mesh"></div>
+    <div class="tech-border-frame"></div>
+    <div class="tech-corner c-tl"></div>
+    <div class="tech-corner c-tr"></div>
+    <div class="tech-corner c-bl"></div>
+    <div class="tech-corner c-br"></div>
+
+    <!-- Header Section -->
+    <header class="header-zone">
+      <span class="meta-tag">Production Environment Spec</span>
+      <h1 class="main-title" id="posterHeader">DATANEXUS AI</h1>
+      <p class="subtitle" id="posterSub">The Omnipresent Data Science & AI Neural Pipeline</p>
+    </header>
+
+    <!-- Core Pipeline & Exhibits Section -->
+    <section class="middle-zone">
+      <div class="pipeline-grid">
+        
+        <!-- Step 1 -->
+        <article class="step-card">
+          <div class="step-number">
+            <span>[STAGE_01]</span>
+            <span class="step-node-tag">INGEST</span>
+          </div>
+          <h3 class="step-title">1. Smart Ingestion Hub</h3>
+          <p class="step-desc">Robust parser layers for CSV, JSON, and all standard Excel workbooks. Features auto-encoding scanning, case-insensitive mapping, and high-fidelity structural data integrity audits.</p>
+        </article>
+
+        <!-- Step 2 -->
+        <article class="step-card">
+          <div class="step-number">
+            <span>[STAGE_02]</span>
+            <span class="step-node-tag">EDA</span>
+          </div>
+          <h3 class="step-title">2. Descriptive Refinery</h3>
+          <p class="step-desc">Descriptive categorical profiling alongside correlation metrics. Computes Pearson matrices and high-correlation indices, managing state history limits for dataframe rollbacks.</p>
+        </article>
+
+        <!-- Step 3 -->
+        <article class="step-card">
+          <div class="step-number">
+            <span>[STAGE_03]</span>
+            <span class="step-node-tag">VIZ</span>
+          </div>
+          <h3 class="step-title">3. Visual Galaxy Studio</h3>
+          <p class="step-desc">Features 48+ plotly visualization templates covering relationships, distributions, and compositions. Configures primary/secondary axis bindings and custom HSL scale assignments.</p>
+        </article>
+
+        <!-- Step 4 -->
+        <article class="step-card">
+          <div class="step-number">
+            <span>[STAGE_04]</span>
+            <span class="step-node-tag">ML</span>
+          </div>
+          <h3 class="step-title">4. ML Telemetry Lab</h3>
+          <p class="step-desc">Parses classification, regression, and spatial clustering algorithms. Auto-scales features, executes stratified splits, and logs R², F1 scores, and residual maps.</p>
+        </article>
+
+        <!-- Step 5 -->
+        <article class="step-card">
+          <div class="step-number">
+            <span>[STAGE_05]</span>
+            <span class="step-node-tag">CHAT</span>
+          </div>
+          <h3 class="step-title">5. Neural Chat Engine</h3>
+          <p class="step-desc">Redundant Groq (Llama-3) to Gemini routing engine. Anchored by ChromaDB zero-token semantic caching and sandboxed secure code compilation environments.</p>
+        </article>
+
+        <!-- Step 6 -->
+        <article class="step-card">
+          <div class="step-number">
+            <span>[STAGE_06]</span>
+            <span class="step-node-tag">EXPORT</span>
+          </div>
+          <h3 class="step-title">6. Export Vault</h3>
+          <p class="step-desc">Compiles analytics data pipelines into custom-styled Excel grids, Word reports, database-safe SQL schemas, and high-fidelity corporate PDFs with formatted headers.</p>
+        </article>
+
+        <!-- Dynamic Visualization Exhibit Block -->
+        <div class="exhibit-panel">
+          
+          <div class="exhibit-item">
+            <div class="exhibit-label">REFINE: Heatmap</div>
+            <div class="exhibit-graphic">
+              <!-- Pearson Heatmap SVG Mockup -->
+              <svg width="100" height="70" viewBox="0 0 100 70">
+                <rect x="10" y="5" width="20" height="20" fill="var(--primary-accent)" opacity="0.9"/>
+                <rect x="35" y="5" width="20" height="20" fill="var(--secondary-accent)" opacity="0.6"/>
+                <rect x="60" y="5" width="20" height="20" fill="var(--interactive-accent)" opacity="0.3"/>
+                <rect x="10" y="30" width="20" height="20" fill="var(--secondary-accent)" opacity="0.5"/>
+                <rect x="35" y="30" width="20" height="20" fill="var(--primary-accent)" opacity="0.8"/>
+                <rect x="60" y="30" width="20" height="20" fill="var(--secondary-accent)" opacity="0.7"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="exhibit-item">
+            <div class="exhibit-label">STUDIO: Distribution</div>
+            <div class="exhibit-graphic">
+              <!-- Distribution KDE SVG Mockup -->
+              <svg width="120" height="70" viewBox="0 0 120 70" fill="none">
+                <path d="M10 60 Q 30 10, 50 40 T 90 20 T 110 60" stroke="var(--primary-accent)" stroke-width="2" fill="none"/>
+                <path d="M10 60 Q 30 10, 50 40 T 90 20 T 110 60 L 110 60 L 10 60 Z" fill="var(--accent-glow)" opacity="0.3"/>
+                <line x1="50" y1="5" x2="50" y2="60" stroke="var(--secondary-accent)" stroke-dasharray="2" stroke-width="1"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="exhibit-item">
+            <div class="exhibit-label">TELEMETRY: ML Curve</div>
+            <div class="exhibit-graphic">
+              <!-- ML Residual SVG Mockup -->
+              <svg width="100" height="70" viewBox="0 0 100 70" fill="none">
+                <line x1="10" y1="60" x2="90" y2="10" stroke="var(--text-muted)" stroke-dasharray="3"/>
+                <circle cx="20" cy="50" r="3" fill="var(--primary-accent)"/>
+                <circle cx="40" cy="45" r="3" fill="var(--secondary-accent)"/>
+                <circle cx="65" cy="20" r="3" fill="var(--primary-accent)"/>
+                <circle cx="80" cy="15" r="3" fill="var(--secondary-accent)"/>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer-zone">
+      <div class="footer-left">
+        <div class="tech-logo-mark">Ω</div>
+        <div class="footer-text">
+          <strong>DataNexus Core Systems Inc.</strong><br>
+          Modular Orchestration Layer Specifications
+        </div>
+      </div>
+      <div class="footer-right">
+        <span>SYS_VER: 1.2.0-PROD</span><br>
+        <span>STATUS: ACTIVE_NODE</span>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // Pure Javascript Interactive Color Theme Switcher
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.getElementById("themeBtn");
+      
+      if (body.getAttribute("data-theme") === "light") {
+        body.removeAttribute("data-theme");
+        btn.innerText = "Switch to Light Theme";
+      } else {
+        body.setAttribute("data-theme", "light");
+        btn.innerText = "Switch to Dark Theme";
+      }
+    }
+  </script>
+</body>
+</html>
