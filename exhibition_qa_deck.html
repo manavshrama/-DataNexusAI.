@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataNexus AI: Exhibition Readiness & Pitch Q&A Deck</title>
+  <meta name="description" content="An interactive preparation dashboard for presenting DataNexus AI at exhibitions, conferences, and project defenses.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Design Tokens - NexusNoir Theme */
+    :root {
+      --primary-bg: #050505;
+      --secondary-bg: #0C0C0F;
+      --card-bg: rgba(16, 16, 20, 0.7);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --text-primary: #FFFFFF;
+      --text-secondary: #B5B5BE;
+      --text-muted: #646473;
+      --primary-accent: #00D2FF;
+      --secondary-accent: #9D50BB;
+      --interactive-accent: #6E48AA;
+      --accent-glow: rgba(0, 210, 255, 0.15);
+      --purple-glow: rgba(157, 80, 187, 0.15);
+      --success: #00E676;
+      --warning: #FFD600;
+      --grid-line: rgba(255, 255, 255, 0.02);
+      --badge-bg: rgba(0, 210, 255, 0.08);
+      --badge-border: rgba(0, 210, 255, 0.2);
+    }
+
+    /* Light Theme Tokens - NexusAlabaster */
+    [data-theme="light"] {
+      --primary-bg: #F4F5F8;
+      --secondary-bg: #FFFFFF;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --text-primary: #121217;
+      --text-secondary: #4A4A58;
+      --text-muted: #8E8E9F;
+      --primary-accent: #6E48AA;
+      --secondary-accent: #9D50BB;
+      --interactive-accent: #00D2FF;
+      --accent-glow: rgba(110, 72, 170, 0.1);
+      --purple-glow: rgba(157, 80, 187, 0.1);
+      --success: #2E7D32;
+      --warning: #F57F17;
+      --grid-line: rgba(0, 0, 0, 0.03);
+      --badge-bg: rgba(110, 72, 170, 0.06);
+      --badge-border: rgba(110, 72, 170, 0.15);
+    }
+
+    /* Resets & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--primary-bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      position: relative;
+    }
+
+    /* Background Grids & Ambient Glows */
+    .bg-mesh {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 15% 15%, var(--accent-glow) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 85%, var(--purple-glow) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Outer Tech Layout Border */
+    .border-frame {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 1px dashed var(--card-border);
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* Header & Controls styling */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 40px 5% 20px 5%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(var(--primary-bg), 0.5);
+      backdrop-filter: blur(8px);
+    }
+
+    .meta-tag {
+      font-family: 'Fira Code', monospace;
+      color: var(--primary-accent);
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-family: 'Syne', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .desc {
+      max-width: 700px;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* Actions Bar (Search & Theme Toggle) */
+    .action-bar {
+      width: 90%;
+      max-width: 1200px;
+      margin: 25px auto 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+      max-width: 500px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 18px 12px 42px;
+      border-radius: 30px;
+      border: 1px solid var(--card-border);
+      background-color: var(--secondary-bg);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .btn-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-btn {
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .action-btn:hover {
+      border-color: var(--primary-accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Filter Tabs */
+    .filter-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 15px auto 25px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      z-index: 10;
+      position: relative;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .filter-tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background-color: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .filter-tab:hover {
+      color: var(--text-primary);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .filter-tab.active {
+      background-color: var(--badge-bg);
+      border-color: var(--badge-border);
+      color: var(--primary-accent);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Content Area & Question Cards Grid */
+    main {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto 50px auto;
+      z-index: 10;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      flex-grow: 1;
+    }
+
+    .qa-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .qa-card::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--primary-accent), var(--secondary-accent));
+      opacity: 0.7;
+      transition: width 0.3s ease;
+    }
+
+    .qa-card:hover {
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3), 
+                  0 0 2px var(--primary-accent);
+      transform: translateY(-2px);
+    }
+
+    .qa-card:hover::after {
+      width: 6px;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .badge-category {
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background-color: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--primary-accent);
+    }
+
+    .badge-role {
+      font-size: 10px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .role-asker {
+      background-color: rgba(157, 80, 187, 0.1);
+      border: 1px solid rgba(157, 80, 187, 0.25);
+      color: var(--secondary-accent);
+    }
+
+    .role-presenter {
+      background-color: rgba(0, 230, 118, 0.08);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      color: var(--success);
+    }
+
+    .question-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+    }
+
+    .qa-card:hover .question-text {
+      color: var(--primary-accent);
+    }
+
+    /* Accordion Collapse Logic */
+    .answer-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+      opacity: 0;
+      border-top: 1px solid transparent;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    .qa-card.expanded .answer-panel {
+      max-height: 800px;
+      opacity: 1;
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+
+    .answer-section {
+      margin-bottom: 12px;
+    }
+
+    .answer-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--primary-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-content {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .section-content strong {
+      color: var(--text-primary);
+    }
+
+    /* Technical Snippets inside Answers */
+    .tech-pill {
+      display: inline-block;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--text-primary);
+      margin-right: 4px;
+    }
+
+    /* Collapsible Indicator Arrow */
+    .expand-indicator {
+      align-self: center;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s ease;
+    }
+
+    .expand-indicator::after {
+      content: "▼";
+      font-size: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .qa-card.expanded .expand-indicator {
+      color: var(--primary-accent);
+    }
+
+    .qa-card.expanded .expand-indicator::after {
+      transform: rotate(180deg);
+      content: "▼";
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-style: italic;
+      display: none;
+    }
+
+    /* Footer Zone */
+    footer {
+      z-index: 10;
+      position: relative;
+      border-top: 1px solid var(--card-border);
+      padding: 30px 5%;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(var(--secondary-bg), 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #FFF;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .footer-right {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--primary-accent);
+    }
+
+    /* Print-Optimized Styles */
+    @media print {
+      body {
+        background-color: #fff !important;
+        color: #000 !important;
+      }
+      .bg-mesh, .bg-grid, .border-frame, .action-bar, .filter-container, .theme-toggle-btn, .expand-indicator {
+        display: none !important;
+      }
+      header {
+        border-bottom: 2px solid #000;
+        padding: 20px 0;
+      }
+      .title {
+        -webkit-text-fill-color: #000 !important;
+        background: none !important;
+        color: #000 !important;
+      }
+      main {
+        gap: 30px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+      .qa-card {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid;
+        box-shadow: none !important;
+        padding: 15px !important;
+      }
+      .qa-card::after {
+        display: none !important;
+      }
+      .answer-panel {
+        max-height: none !important;
+        opacity: 1 !important;
+        border-top: 1px solid #ccc !important;
+        padding-top: 10px !important;
+        margin-top: 10px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient effects layers -->
+  <div class="bg-mesh"></div>
+  <div class="bg-grid"></div>
+  <div class="border-frame"></div>
+
+  <!-- Header -->
+  <header>
+    <span class="meta-tag">Exhibition Playbook v1.2</span>
+    <h1 class="title">Exhibition Intelligence Engine</h1>
+    <p class="desc">Prepare for judges, pitch to investors, and hook passing crowds. Use this interactive deck to master the narrative defense of DataNexus AI.</p>
+  </header>
+
+  <!-- Actions & Search -->
+  <section class="action-bar">
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search questions, keywords, stages..." onkeyup="filterQuestions()">
+    </div>
+    
+    <div class="btn-controls">
+      <button class="action-btn" onclick="toggleTheme()" id="themeBtn">
+        <span>🌓</span> Toggle Light/Dark
+      </button>
+      <button class="action-btn" onclick="window.print()">
+        <span>🖨️</span> Print PDF Handbook
+      </button>
+      <button class="action-btn" onclick="toggleAllCards()" id="toggleAllBtn">
+        <span>➕</span> Expand All
+      </button>
+    </div>
+  </section>
+
+  <!-- Filter Category Tabs -->
+  <section class="filter-container" id="filterTabs">
+    <button class="filter-tab active" onclick="setCategory('all')">All Questions</button>
+    <button class="filter-tab" onclick="setCategory('pitch')">Elevator Pitch</button>
+    <button class="filter-tab" onclick="setCategory('ingest')">Ingestion & EDA</button>
+    <button class="filter-tab" onclick="setCategory('viz')">Visuals & HSL</button>
+    <button class="filter-tab" onclick="setCategory('ml')">ML Telemetry</button>
+    <button class="filter-tab" onclick="setCategory('chat')">AI Chat & Chroma</button>
+    <button class="filter-tab" onclick="setCategory('export')">Vault & Pipeline</button>
+    <button class="filter-tab" onclick="setCategory('engagement')">Crowd Engagement</button>
+  </section>
+
+  <!-- Main Q&A Grid -->
+  <main id="qaContainer">
+    
+    <!-- CARD 1 -->
+    <article class="qa-card" data-category="pitch" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Elevator Pitch</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"What is DataNexus AI in simple terms, and why does it exist?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">🎯 Key Pitch Strategy</div>
+          <div class="section-content">
+            Frame DataNexus AI not just as a tool, but as a <strong>unified end-to-end intelligence ecosystem</strong>. It eliminates the friction of moving between multiple disjointed applications (Excel for ingestion, Python/Plotly for visualization, Scikit-learn for ML, and custom report builders).
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "DataNexus AI is an omnipresent data science dashboard that transforms raw, messy data into high-precision visual galleries, custom machine learning models, and executive-ready reports in seconds. It bridges the gap between complex engineering pipelines and business strategy, providing non-technical leaders and developers alike with an intelligent, sandboxed space to load, clean, model, chat with, and export their datasets without writing a single line of boilerplate code."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 2 -->
+    <article class="qa-card" data-category="pitch" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Elevator Pitch</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"How is this different from standard BI software like Tableau or PowerBI?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">🎯 Key Pitch Strategy</div>
+          <div class="section-content">
+            Highlight the shift from <strong>passive visual monitoring</strong> to **active predictive modelling**. Traditional BI tools are lookback-oriented dashboards. DataNexus is a full machine learning lifecycle loop.
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "Tableau and PowerBI are excellent for showing *what happened* in the past via static tables and bar charts. DataNexus AI acts on *what will happen* next. It includes built-in automated machine learning models, descriptive high-correlation indices, a sandboxed natural language AI chat engine that writes and runs secure analysis on the fly, and an export vault that generates production SQL schemas and professional PDF reports instantly. It is not just an analytics dashboard; it is a live data science pipeline."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 3 -->
+    <article class="qa-card" data-category="ingest" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Ingestion & EDA</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"How does the Ingestion Hub handle corrupt files, encoding problems, or huge Excel books?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Smart Ingestion Hub</span>
+            <span class="tech-pill">Auto-Encoding Scan</span>
+            <span class="tech-pill">Case-Insensitive Mapping</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "We built the Smart Ingestion Hub specifically to tackle the real-world chaos of raw data. It utilizes an automated file-encoding scanning mechanism to catch binary quirks in legacy CSVs, maps worksheets case-insensitively, and audits structural integrity before processing. For massive workbooks, we perform schema parsing to load only necessary metadata, securing the system's memory constraints and avoiding typical memory leaks."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 4 -->
+    <article class="qa-card" data-category="ingest" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Ingestion & EDA</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"What advanced descriptive metrics does the refinery tab offer over basic averages?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Pearson Matrices</span>
+            <span class="tech-pill">High-Correlation Indices</span>
+            <span class="tech-pill">State History Rollbacks</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "The Descriptive Refinery does not stop at mean or median values. It automatically profiles categorical distributions, calculates full Pearson cross-correlation matrices, and isolates high-correlation indices to alert the user of multi-collinearity issues. Best of all, we've implemented an in-memory <strong>State History Rollback</strong> pipeline, enabling users to commit adjustments, clean null values, and reverse changes safely without reloading their files."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 5 -->
+    <article class="qa-card" data-category="viz" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Visuals & HSL</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"You boast 48+ visualization templates. How do you keep page rendering performant?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Plotly WebGL</span>
+            <span class="tech-pill">Custom HSL Scales</span>
+            <span class="tech-pill">Dual-Axis Binding</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "Our Visual Galaxy Studio is built on a responsive rendering configuration utilizing Plotly's WebGL layer for heavy datasets. This allows smooth client-side zooming, panning, and interaction even with tens of thousands of data points. We support 48 distinct visualization archetypes—including dual-axis composition charts and 3D scatter plots. Each visualization is colored using adaptive HSL custom scales that shift between our NexusNoir (dark) and NexusAlabaster (light) themes dynamically, maintaining accessibility and visual balance."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 6 -->
+    <article class="qa-card" data-category="ml" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">ML Telemetry</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"How do you prevent non-technical users from introducing model bias or overfitting?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Stratified Splits</span>
+            <span class="tech-pill">Residual Distribution Plots</span>
+            <span class="tech-pill">Auto Feature-Scaling</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "To safeguard modeling integrity, the ML Telemetry Lab enforces a locked pipeline of data preparation before any training occurs. It auto-scales numerical features using robust standardized scalars and performs forced stratified splits to maintain class balance in classification problems. Rather than just returning an accuracy score, we output interactive **Residual Distribution Plots** and precision-recall telemetry, exposing potential bias immediately in clear visual metrics."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 7 -->
+    <article class="qa-card" data-category="ml" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">ML Telemetry</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"Which algorithms are supported in the ML Telemetry Lab?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Scikit-Learn</span>
+            <span class="tech-pill">Stratified K-Fold</span>
+            <span class="tech-pill">AutoML</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "We support three primary domains of machine learning:
+            <ul>
+              <li><strong>Classification:</strong> Logistic Regression, Random Forests, and Support Vector Machines (SVM).</li>
+              <li><strong>Regression:</strong> High-precision Linear, Ridge, and Lasso configurations.</li>
+              <li><strong>Clustering:</strong> Density-based spatial clustering (DBSCAN) and centroid-based K-Means.</li>
+            </ul>
+            All models run in optimized asynchronous processes in the backend to ensure the dashboard remains interactive and lightning fast."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 8 -->
+    <article class="qa-card" data-category="chat" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">AI Chat & Chroma</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"How do you manage the API token costs and speed for the Neural Chat Engine?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">ChromaDB Cache</span>
+            <span class="tech-pill">Zero-Token Cache Hit</span>
+            <span class="tech-pill">Semantic Embeddings</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "This is our premier efficiency feature. We designed a **Zero-Token Neural Caching layer powered by ChromaDB**. When a user chats with their dataset, the query is converted into a high-dimensional vector. Before hitting external API keys, the cache performs a semantic similarity search. If a highly similar analysis query exists, the system immediately returns the cached result, rendering visualizations instantly with zero API overhead and sub-millisecond response times."
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 9 -->
+    <article class="qa-card" data-category="chat" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">AI Chat & Chroma</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"Is it safe to run user code dynamically inside the Neural Chat Engine? How do you prevent injections?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Secure Sandbox</span>
+            <span class="tech-pill">Schema Pruning</span>
+            <span class="tech-pill">Defensive Prompts</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "Security is fundamental to our architecture. The Neural Chat Engine operates inside a strictly isolated, **sandboxed Python compilation environment**. To prevent data leakage and malicious command injections:
+            <ol>
+              <li>The system passes only <strong>pruned semantic schemas</strong> to the LLM—never the raw user data itself.</li>
+              <li>Generated code is audited syntactically via AST analysis to block system calls (e.g., `os`, `subprocess`).</li>
+              <li>Execution occurs in a temporary, memory-isolated runtime with auto-timeout caps to prevent infinite loops."
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 10 -->
+    <article class="qa-card" data-category="export" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Vault & Pipeline</span>
+        <span class="badge-role role-asker">Judge/Visitor Ask</span>
+      </div>
+      <h2 class="question-text">"What makes your Export Vault superior to just saving CSVs?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">⚙️ Technical Spec</div>
+          <div class="section-content">
+            <span class="tech-pill">Excel Grid Styling</span>
+            <span class="tech-pill">High-Fidelity PDF</span>
+            <span class="tech-pill">SQL Schema Builder</span>
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Recommended Answer</div>
+          <div class="section-content">
+            "CSVs are bare flat files that lack structure and visual context. Our Export Vault provides corporate-level deliverables:
+            <ul>
+              <li><strong>Custom Excel Grids:</strong> Formatted table headers, automated column width metrics, and highlight palettes for readability.</li>
+              <li><strong>High-Fidelity PDFs & Word Documents:</strong> Clean layout hierarchies, printed charts, and professional formatting.</li>
+              <li><strong>SQL Schema Generator:</strong> Analyzes the dataset's live pandas datatypes and yields production-ready `CREATE TABLE` scripts tailored to PostgreSQL, MySQL, or SQLite, saving engineers hours of manual setup."
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Recommended Answer</div>
+    </article>
+
+    <!-- CARD 11 -->
+    <article class="qa-card" data-category="engagement" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Crowd Engagement</span>
+        <span class="badge-role role-presenter">Your Hook Question</span>
+      </div>
+      <h2 class="question-text">"Do you have a messy CSV or Excel sheet on your device? Let's drop it in and uncover 3 hidden insights in 30 seconds!"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">🔥 Interactive Hook Strategy</div>
+          <div class="section-content">
+            The ultimate crowd-pleaser at an exhibition is <strong>live demonstration with real-world, unpredictable data</strong>. Rather than showing canned slides, offering to parse *their* data immediately captures maximum attention.
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Presentation Steps</div>
+          <div class="section-content">
+            <ol>
+              <li>Let them upload their file safely using our high-fidelity parser.</li>
+              <li>Immediately show them the automated correlation heatmap to locate unexpected patterns.</li>
+              <li>Use the Neural Chat Engine to ask: <i>"Give me a high-precision summary of the weirdest anomalies in this data."</i></li>
+            </ol>
+            This completely validates the efficiency and speed of the platform!
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Presentation Strategy</div>
+    </article>
+
+    <!-- CARD 12 -->
+    <article class="qa-card" data-category="engagement" onclick="toggleCard(this)">
+      <div class="card-meta">
+        <span class="badge-category">Crowd Engagement</span>
+        <span class="badge-role role-presenter">Your Hook Question</span>
+      </div>
+      <h2 class="question-text">"What is the bottleneck in your data team's workflow? Is it cleaning raw data, generating the right models, or formatting reports?"</h2>
+      <div class="answer-panel">
+        <div class="answer-section">
+          <div class="section-label">🔥 Dialogue Building Strategy</div>
+          <div class="section-content">
+            Use this diagnostic question to identify their pain points. Listen to their response, and then custom-navigate your dashboard to show that specific solution.
+          </div>
+        </div>
+        <div class="answer-section">
+          <div class="section-label">⚡ Tailored Responses</div>
+          <div class="section-content">
+            <ul>
+              <li><strong>If they say "Data Cleaning":</strong> "Watch how our Descriptive Refinery runs Pearson correlations and rolls back incorrect edits using the State History pipeline."</li>
+              <li><strong>If they say "Modeling":</strong> "Let me show you how our ML Telemetry Lab sets up standard scaling, stratified splits, and trains a Random Forest in 3 clicks."</li>
+              <li><strong>If they say "Formatting Reports":</strong> "Check out the Export Vault. It compiles clean visual grids and SQL setup scripts instantaneously."</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="expand-indicator">View Presentation Strategy</div>
+    </article>
+
+  </main>
+
+  <!-- Empty state for search -->
+  <div class="empty-state" id="emptyState">
+    No questions matched your search criteria. Try a different search term or category.
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-left">
+      <div class="footer-logo">Ω</div>
+      <div class="footer-text">
+        <strong>DataNexus Core Systems Inc.</strong><br>
+        Engineered for Extreme Precision & Rapid Discovery
+      </div>
+    </div>
+    <div class="footer-right">
+      <span>SYS_NODE: READY</span>
+    </div>
+  </footer>
+
+  <script>
+    // Collapse / Expand Individual Cards
+    function toggleCard(card) {
+      // Toggle expanded class
+      card.classList.toggle('expanded');
+    }
+
+    // Toggle All Cards simultaneously
+    function toggleAllCards() {
+      const cards = document.querySelectorAll('.qa-card');
+      const btn = document.getElementById('toggleAllBtn');
+      const isExpanded = btn.innerText.includes('Collapse');
+
+      cards.forEach(card => {
+        if (isExpanded) {
+          card.classList.remove('expanded');
+        } else {
+          card.classList.add('expanded');
+        }
+      });
+
+      if (isExpanded) {
+        btn.innerHTML = '<span>➕</span> Expand All';
+      } else {
+        btn.innerHTML = '<span>➖</span> Collapse All';
+      }
+    }
+
+    // Set Category Filters
+    let currentCategory = 'all';
+    function setCategory(category) {
+      currentCategory = category;
+      
+      // Update Active Tab Styling
+      const tabs = document.querySelectorAll('.filter-tab');
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('onclick').includes(`'${category}'`)) {
+          tab.classList.add('active');
+        }
+      });
+
+      filterQuestions();
+    }
+
+    // Comprehensive Live Filter & Search Logic
+    function filterQuestions() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.qa-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const cat = card.getAttribute('data-category');
+        
+        const matchesSearch = text.includes(searchVal);
+        const matchesCategory = (currentCategory === 'all' || cat === currentCategory);
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Handle Empty State
+      const emptyState = document.getElementById('emptyState');
+      if (visibleCount === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+      }
+    }
+
+    // Javascript Theme Switcher
+    function toggleTheme() {
+      const body = document.body;
+      if (body.getAttribute("data-theme") === "light") {
+        body.removeAttribute("data-theme");
+      } else {
+        body.setAttribute("data-theme", "light");
+      }
+    }
+  </script>
+</body>
+</html>

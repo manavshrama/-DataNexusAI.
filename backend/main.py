@@ -44,12 +44,26 @@ async def upload_dataset(file: UploadFile = File(...)):
     content = await file.read()
     
     try:
-        if file.filename.endswith('.csv'):
+        filename_lower = (file.filename or "").lower()
+        if filename_lower.endswith('.csv'):
             df = pd.read_csv(io.BytesIO(content))
-        elif file.filename.endswith(('.xls', '.xlsx')):
-            df = pd.read_excel(io.BytesIO(content))
+        elif filename_lower.endswith(('.xlsx', '.xlsm', '.xltx', '.xltm', '.xls', '.xlsb', '.ods')):
+            try:
+                if filename_lower.endswith(('.xlsx', '.xlsm', '.xltx', '.xltm')):
+                    df = pd.read_excel(io.BytesIO(content), engine='openpyxl')
+                elif filename_lower.endswith('.xls'):
+                    df = pd.read_excel(io.BytesIO(content), engine='xlrd')
+                elif filename_lower.endswith('.xlsb'):
+                    df = pd.read_excel(io.BytesIO(content), engine='pyxlsb')
+                elif filename_lower.endswith('.ods'):
+                    df = pd.read_excel(io.BytesIO(content), engine='odf')
+            except Exception as engine_err:
+                try:
+                    df = pd.read_excel(io.BytesIO(content))
+                except Exception as fallback_err:
+                    raise engine_err
         else:
-            raise HTTPException(status_code=400, detail="Unsupported file format")
+            raise HTTPException(status_code=400, detail=f"Unsupported file format: {file.filename}")
             
         # Evict oldest session if limit reached
         if len(sessions) >= MAX_SESSIONS:

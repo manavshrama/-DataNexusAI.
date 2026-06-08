@@ -17,12 +17,15 @@ uploaded_file = st.file_uploader("Upload Data", type=["csv", "xlsx", "json"])
 if uploaded_file is not None:
     with st.spinner("Synchronizing data nodes..."):
         try:
-            if uploaded_file.name.endswith(".csv"):
-                df = pd.read_csv(uploaded_file)
-            elif uploaded_file.name.endswith(".xlsx"):
-                df = pd.read_excel(uploaded_file)
-            else:
+            filename_lower = uploaded_file.name.lower()
+            if filename_lower.endswith(".csv") or filename_lower.endswith(('.xlsx', '.xlsm', '.xltx', '.xltm', '.xls', '.xlsb', '.ods')):
+                df, error = DataLoader.load_file(uploaded_file)
+                if error:
+                    raise ValueError(error)
+            elif filename_lower.endswith(".json"):
                 df = pd.read_json(uploaded_file)
+            else:
+                raise ValueError(f"Unsupported file format: {uploaded_file.name}")
             
             df = process_data(df)
             st.session_state['df'] = df

@@ -12,7 +12,10 @@ class DataLoader:
         error = None
         
         try:
-            if uploaded_file.name.endswith('.csv'):
+            filename = getattr(uploaded_file, 'name', '') or ''
+            filename_lower = filename.lower()
+            
+            if filename_lower.endswith('.csv'):
                 # Try common encodings
                 encodings = ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
                 for encoding in encodings:
@@ -20,18 +23,34 @@ class DataLoader:
                         df = pd.read_csv(uploaded_file, encoding=encoding)
                         break
                     except (UnicodeDecodeError, pd.errors.ParserError):
-                        uploaded_file.seek(0)
+                        if hasattr(uploaded_file, 'seek'):
+                            uploaded_file.seek(0)
                         continue
                 
                 if df is None:
                     error = "Could not decode CSV file with common encodings."
             
-            elif uploaded_file.name.endswith(('.xls', '.xlsx')):
-                # Excel file - we'll handle sheet selection in the UI but load default here
-                df = pd.read_excel(uploaded_file)
+            elif filename_lower.endswith(('.xlsx', '.xlsm', '.xltx', '.xltm', '.xls', '.xlsb', '.ods')):
+                try:
+                    if filename_lower.endswith(('.xlsx', '.xlsm', '.xltx', '.xltm')):
+                        df = pd.read_excel(uploaded_file, engine='openpyxl')
+                    elif filename_lower.endswith('.xls'):
+                        df = pd.read_excel(uploaded_file, engine='xlrd')
+                    elif filename_lower.endswith('.xlsb'):
+                        df = pd.read_excel(uploaded_file, engine='pyxlsb')
+                    elif filename_lower.endswith('.ods'):
+                        df = pd.read_excel(uploaded_file, engine='odf')
+                except Exception as engine_err:
+                    # Fallback to standard read_excel without specifying engine
+                    try:
+                        if hasattr(uploaded_file, 'seek'):
+                            uploaded_file.seek(0)
+                        df = pd.read_excel(uploaded_file)
+                    except Exception as fallback_err:
+                        raise engine_err
             
             else:
-                error = f"Unsupported file format: {uploaded_file.name}"
+                error = f"Unsupported file format: {filename}"
                 
         except Exception as e:
             error = f"Error loading file: {str(e)}"

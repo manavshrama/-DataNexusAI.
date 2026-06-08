@@ -15,6 +15,7 @@ from services.vector_store import initialize_vector_store
 from services.session_manager import init_session_state
 from components.sidebar_ui import render_sidebar
 from components.tab_renderers import (
+    render_home_tab,
     render_upload_tab,
     render_eda_tab,
     render_viz_tab,
@@ -41,8 +42,9 @@ render_sidebar()
 # st.title(APP_HEADER) is removed in favor of per-tab heroes
 st.sidebar.caption("Build: 2026.03.28-v1.1 (Modularized)")
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
     [
+        "🌌 Home",
         "📂 Upload",
         "📊 EDA",
         "🎨 Viz",
@@ -53,21 +55,25 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
 )
 
 with tab1:
-    render_upload_tab(doc_collection, embedder)
+    render_home_tab()
 
 with tab2:
-    render_eda_tab()
+    render_upload_tab(doc_collection, embedder)
 
 with tab3:
-    render_viz_tab()
+    render_eda_tab()
 
 with tab4:
-    render_ml_tab()
+    render_viz_tab()
 
 with tab5:
-    render_chat_tab(chroma_client, embedder, chat_collection, doc_collection)
+    render_ml_tab()
 
 with tab6:
+    render_chat_tab(chroma_client, embedder, chat_collection, doc_collection)
+
+with tab7:
     render_export_tab()
+
 
 

@@ -108,11 +108,11 @@ with st.sidebar:
 chat_container = st.container()
 
 with chat_container:
-    for message in st.session_state['messages']:
+    for idx, message in enumerate(st.session_state['messages']):
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
             if message["role"] == "assistant":
-                execute_code_blocks(message["content"], st.session_state.get('df'))
+                execute_code_blocks(message["content"], st.session_state.get('df'), key_suffix=f"page_{idx}")
 
 # --- Chat Input ---
 if prompt := st.chat_input("Ask anything about your data, charts, or files..."):
@@ -149,7 +149,7 @@ if prompt := st.chat_input("Ask anything about your data, charts, or files..."):
         if cached_answer:
             st.markdown(cached_answer)
             st.session_state['messages'].append({"role": "assistant", "content": cached_answer})
-            execute_code_blocks(cached_answer, st.session_state.get('df'))
+            execute_code_blocks(cached_answer, st.session_state.get('df'), key_suffix=f"page_{len(st.session_state['messages'])-1}")
         else:
             with st.spinner("Nexus AI is processing..."):
                 # Use the consolidated ask method
@@ -159,11 +159,10 @@ if prompt := st.chat_input("Ask anything about your data, charts, or files..."):
                 code = response_data.get("python_code", "")
                 
                 st.markdown(answer)
-                if code:
-                    execute_code_blocks(f"```python\n{code}\n```", st.session_state.get('df'))
-                
                 full_response = f"{answer}\n\n```python\n{code}\n```" if code else answer
                 st.session_state['messages'].append({"role": "assistant", "content": full_response})
+                if code:
+                    execute_code_blocks(f"```python\n{code}\n```", st.session_state.get('df'), key_suffix=f"page_{len(st.session_state['messages'])-1}")
                 
                 # Store in Neural Cache
                 if chat_collection and embedder:

@@ -84,9 +84,23 @@ if st.button("Initiate Forge", use_container_width=True):
             work_df[c] = work_df[c].fillna(fill_val)
 
     le = None
-    if task_type == "Classification" and work_df[target_col].dtype == 'object':
-        le = LabelEncoder()
-        work_df[target_col] = le.fit_transform(work_df[target_col])
+    if task_type == "Classification":
+        target_series = work_df[target_col]
+        # Check if the target is continuous float
+        if pd.api.types.is_float_dtype(target_series):
+            non_null_target = target_series.dropna()
+            if not np.all(non_null_target == non_null_target.round()):
+                st.error(f"❌ **Invalid Logic Mode**: Target column `{target_col}` contains continuous float values. Classification is only valid for discrete classes (integers, strings, categories). Please select **Regression** as the Logic Mode, or choose a discrete target column.")
+                st.stop()
+            else:
+                work_df[target_col] = work_df[target_col].astype(int)
+        
+        # Encode non-numeric discrete targets
+        if isinstance(work_df[target_col].dtype, pd.CategoricalDtype) or \
+           work_df[target_col].dtype in ['object', 'category', 'bool'] or \
+           not pd.api.types.is_numeric_dtype(work_df[target_col]):
+            le = LabelEncoder()
+            work_df[target_col] = le.fit_transform(work_df[target_col].astype(str))
 
     if encode_cats:
         cat_feats = [c for c in feature_cols if work_df[c].dtype == 'object']

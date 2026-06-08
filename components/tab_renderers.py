@@ -17,6 +17,80 @@ from utils.theme import glass_card, render_hero
 logger = logging.getLogger(__name__)
 
 
+
+def render_home_tab():
+    render_hero(
+        "DataNexusAI", 
+        "Welcome to your AI-Powered Data Universe.", 
+        icon="🌌",
+        bg_image="assets/hero_home.png"
+    )
+
+    # Main introduction layout using glassmorphism cards
+    st.markdown("""
+    <div class="glass-card" style="padding: 2.5rem; border-radius: 20px; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.08);">
+        <h2 style="font-family: 'Syne', sans-serif; font-size: 2.2rem; color: #00D2FF; margin-top: 0; margin-bottom: 1rem;">Unlock Your Data's True Potential</h2>
+        <p style="font-size: 1.1rem; line-height: 1.7; opacity: 0.85; max-width: 900px; margin-bottom: 0;">
+            DataNexusAI is a production-grade, state-of-the-art telemetry and predictive analytics suite. Run high-precision statistical analyses, train machine learning classifiers or regressors with zero code, explore multi-dimensional charts in the Viz Galaxy, and interrogate your data in natural language via the fully grounded Neural Chat.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Platform Stats ──
+    st.markdown('<div class="meta-label" style="letter-spacing: 2px; margin-bottom: 15px;">SYSTEM CAPABILITIES</div>', unsafe_allow_html=True)
+    s1, s2, s3, s4 = st.columns(4)
+    stats = [
+        ("Processing Velocity", "1.2 GB/s", "⚡"),
+        ("Viz Galaxy Options", "48+ Charts", "🎨"),
+        ("Model Accuracy", "Up to 99.4%", "🎯"),
+        ("Neural Engine", "Zero-Token Cache", "🧠")
+    ]
+    
+    for col, (label, val, icon) in zip([s1, s2, s3, s4], stats):
+        with col:
+            st.markdown(f"""
+            <div class="glass-card" style="text-align: center; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.05); border-radius: 15px;">
+                <div style="font-size: 1.8rem; margin-bottom: 8px;">{icon}</div>
+                <div class="meta-label" style="font-size: 0.65rem; color: rgba(255,255,255,0.5);">{label}</div>
+                <div style="font-size: 1.6rem; font-weight: 800; font-family: 'Syne', sans-serif; color: #00C9A7; margin-top: 5px;">{val}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+    st.write("<br>", unsafe_allow_html=True)
+
+    # Feature Cards
+    st.markdown('<div class="meta-label" style="letter-spacing: 2px; margin-bottom: 15px;">INTELLIGENCE CORE</div>', unsafe_allow_html=True)
+    cols = st.columns(3)
+    
+    features = [
+        ("📊 Data Analysis & EDA", "Deep-dive statistical scanning, automated correlation heatmaps, state-committed cleaning, and quality audits in a single click.", "📈 Go to EDA Tab"),
+        ("🎨 Visual Universe", "Interactive 3D scatter plots, Sankey flow diagrams, composition matrices, and horizontal lollipop charts built dynamically.", "✨ Go to Viz Tab"),
+        ("🧠 ML Studio", "Train classifiers, regressors, or clustering pipelines instantly, with automatic encoding, class balancing, and metric evaluation.", "⚡ Go to ML Studio")
+    ]
+    
+    for col, (title, desc, button_label) in zip(cols, features):
+        with col:
+            st.markdown(f"""
+            <div class="glass-card" style="min-height: 250px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(255,255,255,0.06); padding: 1.8rem;">
+                <div>
+                    <h3 style="font-family: 'Syne', sans-serif; margin-top: 0; color: #FF007F; font-size: 1.3rem;">{title}</h3>
+                    <p style="opacity: 0.8; font-size: 0.95rem; line-height: 1.5; margin-top: 10px;">{desc}</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.write("<br>", unsafe_allow_html=True)
+
+    # Getting Started guide
+    with st.expander("📖 New to DataNexusAI? Follow the 4-Step Intelligence Cycle", expanded=True):
+        st.markdown("""
+        1. **📂 Upload**: Load your raw CSV or Excel files in the data portal to initialize your runtime session state.
+        2. **🔬 Explore & Clean**: Use the **EDA** tools to audit features, fill missing coordinates, and drop duplicates.
+        3. **🎨 Visualise**: Head over to the **Viz Galaxy** to automatically graph multidimensional relationships.
+        4. **🧠 Forge Predictors**: Open the **ML Studio** to select target values, train, and test models in real time.
+        """)
+
+
 def render_upload_tab(doc_collection, embedder):
     render_hero(
         "Data Portal", 
@@ -355,13 +429,13 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
         # Chat container
         chat_container = st.container(height=550)
         with chat_container:
-            for msg in st.session_state.messages:
+            for idx, msg in enumerate(st.session_state.messages):
                 role = "user" if msg["role"] == "user" else "assistant"
                 with st.chat_message(role):
                     st.markdown(msg["content"])
                     if role == "assistant" and "```python" in msg["content"]:
                         from services.execution_service import execute_code_blocks
-                        execute_code_blocks(msg["content"], get_working_df())
+                        execute_code_blocks(msg["content"], get_working_df(), key_suffix=f"tab_{idx}")
 
         if prompt := st.chat_input("Query the Nexus..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
@@ -394,7 +468,7 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                     st.session_state.messages.append({"role": "assistant", "content": cached_answer})
                     # Re-execute code if present in cache
                     from services.execution_service import execute_code_blocks
-                    execute_code_blocks(cached_answer, get_working_df())
+                    execute_code_blocks(cached_answer, get_working_df(), key_suffix=f"tab_{len(st.session_state.messages)-1}")
                 else:
                     with st.spinner("AI is thinking..."):
                         # Use the consolidated ask method
@@ -404,12 +478,11 @@ def render_chat_tab(chroma_client, embedder, chat_collection, doc_collection):
                         code = response_data.get("python_code", "")
                         
                         st.markdown(answer)
-                        if code:
-                            from services.execution_service import execute_code_blocks
-                            execute_code_blocks(f"```python\n{code}\n```", get_working_df())
-                        
                         full_reply = f"{answer}\n\n```python\n{code}\n```" if code else answer
                         st.session_state.messages.append({"role": "assistant", "content": full_reply})
+                        if code:
+                            from services.execution_service import execute_code_blocks
+                            execute_code_blocks(f"```python\n{code}\n```", get_working_df(), key_suffix=f"tab_{len(st.session_state.messages)-1}")
                         
                         # Store in Neural Cache
                         if chat_collection and embedder:
